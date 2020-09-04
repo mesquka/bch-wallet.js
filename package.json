@@ -1,24 +1,30 @@
 {
-  "name": "slp-wallet",
+  "name": "crypto-wallet",
   "version": "0.0.1",
-  "description": "Javascript SLP Wallet Framework",
+  "description": "Javascript Crypto Wallet Framework",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "npx eslint .",
+    "test": "node test/index.js && npm run lint"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mesquka/slp-wallet.js.git"
+    "url": "git+https://github.com/mesquka/crypto-wallet.js.git"
   },
   "author": "Kieran Mesquita <mesquka@pm.me>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mesquka/slp-wallet.js/issues"
+    "url": "https://github.com/mesquka/crypto-wallet.js/issues"
   },
-  "homepage": "https://github.com/mesquka/slp-wallet.js#readme",
+  "homepage": "https://github.com/mesquka/crypto-wallet.js#readme",
   "devDependencies": {
+    "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.1"
+  },
+  "dependencies": {
+    "bip32": "^2.0.5",
+    "bip39": "^3.0.2"
   }
 }

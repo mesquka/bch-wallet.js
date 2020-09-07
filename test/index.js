@@ -1,16 +1,13 @@
 /* eslint-disable no-console */
 
-const SLPWallet = require('../index');
+const BCHWallet = require('../index');
 
 console.log('RUNNING TESTS');
 
-console.log('\nCREATING SEED');
-const seed = SLPWallet.generateSeed();
-console.log(seed);
-
-console.log('\nLISTING SUPPORTED COINS');
-console.log(SLPWallet.supportedCoins);
+console.log('\nCREATING MNEMONIC');
+const mnemonic = BCHWallet.generateMnemonic();
+console.log(mnemonic);
 
 console.log('\nCREATING WALLET');
-const wallet = new SLPWallet(seed, SLPWallet.supportedCoins);
+const wallet = new BCHWallet(mnemonic);
 console.log(wallet);

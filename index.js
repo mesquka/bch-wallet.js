@@ -10,7 +10,7 @@ const derivationPaths = [
 const bchDefaultPath = "m/44'/145'";
 const slpDefaultPath = "m/44'/245'";
 
-class BCH {
+class BCHWallet {
   /**
    * Wallet seed
    *
@@ -61,9 +61,9 @@ class BCH {
   historicalTransactions = {};
 
   /**
-   * BCH Wallet
+   * BCHWallet
    *
-   * @class BCH
+   * @class BCHWallet
    * @param {Buffer} mnemonic - BIP39 mnemonic for this wallet.
    */
   constructor(mnemonic) {
@@ -206,4 +206,4 @@ class BCH {
   }
 }
 
-module.exports = BCH;
+module.exports = BCHWallet;

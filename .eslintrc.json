@@ -6,7 +6,8 @@
         "node": true
     },
     "extends": [
-        "airbnb-base"
+        "airbnb-base",
+        "plugin:jsdoc/recommended"
     ],
     "globals": {
         "Atomics": "readonly",
@@ -16,6 +17,21 @@
     "parserOptions": {
         "ecmaVersion": 2019
     },
+    "plugins": [
+        "jsdoc"
+    ],
     "rules": {
+        "jsdoc/check-indentation": 1,
+        "jsdoc/require-description": 1,
+        "jsdoc/require-jsdoc": ["warn", {
+            "require": {
+                "ArrowFunctionExpression": true,
+                "ClassExpression": true,
+                "FunctionDeclaration": true,
+                "FunctionExpression": true,
+                "MethodDefinition": true
+            }
+        }],
+        "jsdoc/require-hyphen-before-param-description": "warn"
     }
 }

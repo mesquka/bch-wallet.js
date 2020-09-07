@@ -1,7 +1,7 @@
 {
-  "name": "crypto-wallet",
+  "name": "bch-wallet",
   "version": "0.0.1",
-  "description": "Javascript Crypto Wallet Framework",
+  "description": "Javascript BCH Wallet Framework",
   "main": "index.js",
   "scripts": {
     "lint": "npx eslint .",
@@ -9,19 +9,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mesquka/crypto-wallet.js.git"
+    "url": "git+https://github.com/mesquka/bch-wallet.js.git"
   },
   "author": "Kieran Mesquita <mesquka@pm.me>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mesquka/crypto-wallet.js/issues"
+    "url": "https://github.com/mesquka/bch-wallet.js/issues"
   },
-  "homepage": "https://github.com/mesquka/crypto-wallet.js#readme",
+  "homepage": "https://github.com/mesquka/bch-wallet.js#readme",
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.20.1"
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsdoc": "^30.3.2"
   },
   "dependencies": {
     "bip32": "^2.0.5",

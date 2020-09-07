@@ -80,6 +80,7 @@ class BCHWallet {
    * @returns {string} derived key
    */
   derive(path, index, change) {
+    // TODO derive
     return this;
   }
 
@@ -91,6 +92,7 @@ class BCHWallet {
    * @returns {string} derived address
    */
   deriveReceiveAddress(index) {
+    // TODO encode address
     return this.derive(index);
   }
 
@@ -102,6 +104,7 @@ class BCHWallet {
    * @returns {string} derived address
    */
   deriveChangeAddress(index) {
+    // TODO encode address
     return this.derive(index);
   }
 
@@ -113,6 +116,7 @@ class BCHWallet {
    * @returns {string} derived address
    */
   deriveLegacyAddress(index) {
+    // TODO encode address
     return this.derive(index);
   }
 
@@ -124,6 +128,7 @@ class BCHWallet {
    * @returns {string} derived address
    */
   deriveSLPAddress(index) {
+    // TODO encode address
     return this.derive(index);
   }
 

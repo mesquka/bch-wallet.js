@@ -1,5 +1,6 @@
 const bip32 = require('bip32');
 const bip39 = require('bip39');
+const address = require('./address');
 
 const derivationPaths = [
   "m/44'/0'",
@@ -7,8 +8,7 @@ const derivationPaths = [
   "m/44'/245'",
 ];
 
-const bchDefaultPath = "m/44'/145'";
-const slpDefaultPath = "m/44'/245'";
+const defaultPath = "m/44'/145'";
 
 class BCHWallet {
   /**
@@ -17,6 +17,13 @@ class BCHWallet {
    * @member {number}
    */
   #seed
+
+  /**
+   * Wallet network
+   *
+   * @member {number}
+   */
+  network;
 
   /**
    * Gap Limit
@@ -64,12 +71,23 @@ class BCHWallet {
    * BCHWallet
    *
    * @class BCHWallet
-   * @param {Buffer} mnemonic - BIP39 mnemonic for this wallet.
+   * @param {string} mnemonic - BIP39 mnemonic for this wallet.
+   * @param {string} network - Mainnet/Testnet wallet.
    */
-  constructor(mnemonic) {
+  constructor(mnemonic, network) {
     this.#seed = bip39.mnemonicToSeedSync(mnemonic);
+    this.network = network;
+
+    // Set each derivation path to 0
+    derivationPaths.forEach((path) => {
+      // Set highest index for this derivation path to 0
+      this.highestIndex[path] = 0;
+      this.highestIndexChange[path] = 0;
+    });
   }
 
+  // TODO: Use Private Method when specification finalized:
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields
   /**
    * Derive key from path
    *
@@ -77,59 +95,32 @@ class BCHWallet {
    * @param {Buffer} path - Path to derive
    * @param {number} index - index to derive
    * @param {boolean} change - Derive change address?
-   * @returns {string} derived key
+   * @returns {object<Buffer>} derived key
    */
   derive(path, index, change) {
-    // TODO derive
-    return this;
-  }
+    // Get full derivation path we want
+    const derivationPath = `${path}/${change ? 1 : 0}/${index}`;
 
-  /**
-   * Derive receive address from index
-   *
-   * @function
-   * @param {number} index - index to derive
-   * @returns {string} derived address
-   */
-  deriveReceiveAddress(index) {
-    // TODO encode address
-    return this.derive(index);
-  }
+    // Derive keys
+    const derived = bip32.fromSeed(this.#seed).derivePath(derivationPath);
 
-  /**
-   * Derive change address from index
-   *
-   * @function
-   * @param {number} index - index to derive
-   * @returns {string} derived address
-   */
-  deriveChangeAddress(index) {
-    // TODO encode address
-    return this.derive(index);
-  }
-
-  /**
-   * Derive legacy address from index
-   *
-   * @function
-   * @param {number} index - index to derive
-   * @returns {string} derived address
-   */
-  deriveLegacyAddress(index) {
-    // TODO encode address
-    return this.derive(index);
-  }
-
-  /**
-   * Derive SLP address from index
-   *
-   * @function
-   * @param {number} index - index to derive
-   * @returns {string} derived address
-   */
-  deriveSLPAddress(index) {
-    // TODO encode address
-    return this.derive(index);
+    // Return public and private keys
+    return {
+      public: derived.publicKey,
+      private: derived.privateKey,
+      hash160: derived.identifier,
+      legacy: address.encodeLegacy(this.network, 'p2pkh', derived.identifier),
+      address: address.encodeCashaddress(
+        this.network === 'mainnet' ? 'bitcoincash' : 'bchtest',
+        'P2PKH',
+        derived.identifier,
+      ),
+      slp: address.encodeCashaddress(
+        'simpleledger',
+        'P2PKH',
+        derived.identifier,
+      ),
+    };
   }
 
   /**
@@ -177,7 +168,17 @@ class BCHWallet {
    * @returns {string} - wallet address
    */
   get address() {
-    return this.getReceiveAddressIndex(this.highestIndex);
+    return this.derive(defaultPath, this.highestIndex[defaultPath], false).address;
+  }
+
+  /**
+   * Get change wallet address
+   *
+   * @static
+   * @returns {string} - wallet address
+   */
+  get changeAddress() {
+    return this.derive(defaultPath, this.highestChangeIndex[defaultPath], true).address;
   }
 
   /**
@@ -187,7 +188,7 @@ class BCHWallet {
    * @returns {string} - wallet address
    */
   get legacyAddress() {
-    return this.getLegacyAddressIndex(this.highestIndex);
+    return this.derive(defaultPath, this.highestIndex[defaultPath], false).legacy;
   }
 
   /**
@@ -197,7 +198,7 @@ class BCHWallet {
    * @returns {string} - wallet address
    */
   get slpAddress() {
-    return this.getSLPAddressIndex(this.highestIndex);
+    return this.derive(defaultPath, this.highestIndex[defaultPath], false).slp;
   }
 
   /**

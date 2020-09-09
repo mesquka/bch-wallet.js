@@ -1,25 +1,54 @@
 /* eslint-disable no-console */
+const assert = require('assert');
+const testVectors = require('./testVectors');
+const encoder = require('../address/encoder');
 
-const BCHWallet = require('../index');
+console.log('\n\nRUNNING ADDRESS TESTS');
 
-console.log('RUNNING TESTS');
+console.log('\nTESTING ENCODER');
 
-console.log('\nGENERATING MNEMONIC');
-const mnemonic = BCHWallet.generateMnemonic();
-console.log(mnemonic);
+testVectors.derivations.forEach((vector) => {
+  console.log();
 
-console.log('\nCREATING WALLET');
-const wallet = new BCHWallet(mnemonic, 'mainnet');
+  console.log(vector.hash160);
+
+  const address = encoder.encodeCashaddress('bitcoincash', 'P2PKH', vector.hash160);
+  console.log(address);
+  assert(encoder.decodeCashaddress(address).hash160.equals(vector.hash160));
+  assert(address === vector.address);
+  assert(encoder.validate(address));
+  assert(encoder.validateCashaddress(address));
+
+  const legacy = encoder.encodeLegacy('mainnet', 'P2PKH', vector.hash160);
+  console.log(legacy);
+  assert(encoder.decodeLegacy(legacy).hash160.equals(vector.hash160));
+  assert(legacy === vector.legacy);
+  assert(encoder.validate(legacy));
+  assert(encoder.validateLegacyaddress(legacy));
+
+  const slp = encoder.encodeCashaddress('simpleledger', 'P2PKH', vector.hash160);
+  console.log(slp);
+  assert(encoder.decodeCashaddress(slp).hash160.equals(vector.hash160));
+  assert(slp === vector.slp);
+  assert(encoder.validate(slp));
+  assert(encoder.validateCashaddress(slp));
+});
+
+const Wallet = require('../index');
+
+console.log('\n\nRUNNING WALLET TESTS');
+
+console.log('\nTESTING WALLET CREATION');
+const wallet = new Wallet(testVectors.mnemonic, 'mainnet');
 console.log(wallet);
 
-console.log('\nDERIVE ADDRESS');
-console.log(wallet.derive("m/44'/145'", 0, false));
+console.log('\nTESTING ADDRESS DERIVATION');
 
-console.log('\nGET ADDRESS');
-console.log(wallet.address);
-
-console.log('\nGET SLP ADDRESS');
-console.log(wallet.slpAddress);
-
-console.log('\nGET LEGACY ADDRESS');
-console.log(wallet.legacyAddress);
+testVectors.derivations.forEach((vector, index) => {
+  const address = wallet.derive("m/44'/145'/0'", index, false);
+  console.log(address);
+  assert(address.public.equals(vector.public));
+  assert(address.address === vector.address);
+  assert(address.slp === vector.slp);
+  assert(address.legacy === vector.legacy);
+});

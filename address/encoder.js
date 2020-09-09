@@ -88,13 +88,19 @@ function decodeCashaddress(address) {
     switch (decoded.prefix) {
       case 'bitcoincash':
         return {
-          hash160: decoded.hash,
+          hash160: Buffer.from(decoded.hash),
+          network: 'mainnet',
+          type: decoded.type,
+        };
+      case 'simpleledger':
+        return {
+          hash160: Buffer.from(decoded.hash),
           network: 'mainnet',
           type: decoded.type,
         };
       case 'bchtest':
         return {
-          hash160: decoded.hash,
+          hash160: Buffer.from(decoded.hash),
           network: 'testnet',
           type: decoded.type,
         };

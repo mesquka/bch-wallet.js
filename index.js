@@ -1,14 +1,14 @@
 const bip32 = require('bip32');
 const bip39 = require('bip39');
-const address = require('./address');
+const Address = require('./address');
 
 const derivationPaths = [
-  "m/44'/0'",
-  "m/44'/145'",
-  "m/44'/245'",
+  "m/44'/0'/0'",
+  "m/44'/145'/0'",
+  "m/44'/245'/0'",
 ];
 
-const defaultPath = "m/44'/145'";
+const defaultPath = "m/44'/145'/0'";
 
 class BCHWallet {
   /**
@@ -95,7 +95,7 @@ class BCHWallet {
    * @param {Buffer} path - Path to derive
    * @param {number} index - index to derive
    * @param {boolean} change - Derive change address?
-   * @returns {object<Buffer>} derived key
+   * @returns {Address} derived address
    */
   derive(path, index, change) {
     // Get full derivation path we want
@@ -104,23 +104,8 @@ class BCHWallet {
     // Derive keys
     const derived = bip32.fromSeed(this.#seed).derivePath(derivationPath);
 
-    // Return public and private keys
-    return {
-      public: derived.publicKey,
-      private: derived.privateKey,
-      hash160: derived.identifier,
-      legacy: address.encodeLegacy(this.network, 'p2pkh', derived.identifier),
-      address: address.encodeCashaddress(
-        this.network === 'mainnet' ? 'bitcoincash' : 'bchtest',
-        'P2PKH',
-        derived.identifier,
-      ),
-      slp: address.encodeCashaddress(
-        'simpleledger',
-        'P2PKH',
-        derived.identifier,
-      ),
-    };
+    // Return Address object
+    return Address.fromDerived(derived, this.network);
   }
 
   /**

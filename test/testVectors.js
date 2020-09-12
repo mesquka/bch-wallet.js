@@ -1,4 +1,5 @@
 module.exports = {
+  // DON'T USE THIS MNEMONIC TO HOLD REAL FUNDS
   mnemonic: 'cherry awake rebuild solid summer august cherry bomb rebuild merit find clean',
   derivations: [
     {

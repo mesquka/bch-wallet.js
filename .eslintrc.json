@@ -21,6 +21,7 @@
         "jsdoc"
     ],
     "rules": {
+        "no-param-reassign": "off",
         "jsdoc/check-indentation": 1,
         "jsdoc/require-description": 1,
         "jsdoc/require-jsdoc": ["warn", {

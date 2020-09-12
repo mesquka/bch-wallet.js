@@ -1,16 +1,27 @@
 const bip32 = require('bip32');
 const bip39 = require('bip39');
 const Address = require('./address');
-
-const derivationPaths = [
-  "m/44'/0'/0'",
-  "m/44'/145'/0'",
-  "m/44'/245'/0'",
-];
-
-const defaultPath = "m/44'/145'/0'";
+const Electrum = require('./electrum');
 
 class BCHWallet {
+  /**
+   * Derivation paths to search on
+   *
+   * @member {Array<string>}
+   */
+  derivationPaths = [
+    "m/44'/0'/0'",
+    "m/44'/145'/0'",
+    "m/44'/245'/0'",
+  ];
+
+  /**
+   * Path to generate addresses on
+   *
+   * @member {string}
+   */
+  defaultDerivationPath = "m/44'/145'/0'"
+
   /**
    * Wallet seed
    *
@@ -19,11 +30,11 @@ class BCHWallet {
   #seed
 
   /**
-   * Wallet network
+   * Electrum wallet
    *
    * @member {number}
    */
-  network;
+  electrum;
 
   /**
    * Gap Limit
@@ -72,18 +83,26 @@ class BCHWallet {
    *
    * @class BCHWallet
    * @param {string} mnemonic - BIP39 mnemonic for this wallet.
-   * @param {string} network - Mainnet/Testnet wallet.
+   * @param {object} [options] - Wallet options.
    */
-  constructor(mnemonic, network) {
+  constructor(mnemonic, options) {
+    options = options || {};
+    options.network = options.network || 'mainnet';
+    options.electrum = options.electrum || {};
+    options.electrum.network = options.electrum.network || options.network;
+
     this.#seed = bip39.mnemonicToSeedSync(mnemonic);
-    this.network = network;
+    this.network = options.network;
 
     // Set each derivation path to 0
-    derivationPaths.forEach((path) => {
+    this.derivationPaths.forEach((path) => {
       // Set highest index for this derivation path to 0
       this.highestIndex[path] = 0;
       this.highestIndexChange[path] = 0;
     });
+
+    // Setup electrum connection
+    this.electrum = new Electrum(options.electrum);
   }
 
   // TODO: Use Private Method when specification finalized:
@@ -121,7 +140,7 @@ class BCHWallet {
     this.historicalTransactions = [];
 
     // Check each derivation path
-    derivationPaths.forEach((path) => {
+    this.derivationPaths.forEach((path) => {
       // Set highest index for this derivation path to 0
       this.highestIndex[path] = 0;
       this.highestIndexChange[path] = 0;
@@ -153,7 +172,11 @@ class BCHWallet {
    * @returns {string} - wallet address
    */
   get address() {
-    return this.derive(defaultPath, this.highestIndex[defaultPath], false).address;
+    return this.derive(
+      this.defaultDerivationPath,
+      this.highestIndex[this.defaultDerivationPath],
+      false,
+    ).address;
   }
 
   /**
@@ -163,7 +186,11 @@ class BCHWallet {
    * @returns {string} - wallet address
    */
   get changeAddress() {
-    return this.derive(defaultPath, this.highestChangeIndex[defaultPath], true).address;
+    return this.derive(
+      this.defaultDerivationPath,
+      this.highestChangeIndex[this.defaultDerivationPath],
+      true,
+    ).address;
   }
 
   /**
@@ -173,7 +200,11 @@ class BCHWallet {
    * @returns {string} - wallet address
    */
   get legacyAddress() {
-    return this.derive(defaultPath, this.highestIndex[defaultPath], false).legacy;
+    return this.derive(
+      this.defaultDerivationPath,
+      this.highestIndex[this.defaultDerivationPath],
+      false,
+    ).legacy;
   }
 
   /**
@@ -183,7 +214,11 @@ class BCHWallet {
    * @returns {string} - wallet address
    */
   get slpAddress() {
-    return this.derive(defaultPath, this.highestIndex[defaultPath], false).slp;
+    return this.derive(
+      this.defaultDerivationPath,
+      this.highestIndex[this.defaultDerivationPath],
+      false,
+    ).slp;
   }
 
   /**

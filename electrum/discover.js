@@ -27,14 +27,25 @@ async function processQueue() {
   try {
     // Connect to server
     const electrum = new ElectrumClient('bch-wallet', '1.4.3', server.host, server.port);
-    await electrum.connect();
+
+    if (!await electrum.connect()) {
+      // Add server back to queue until retry limit is reached
+      if (server.tries < 2) {
+        console.log(`Couldn't connect to server ${server.host}, trying later (${server.tries + 1} tries)`);
+        server.tries += 1;
+        queue.unshift(server);
+      } else {
+        console.log(`Couldn't connect to server ${server.host}, rety limit reached`);
+      }
+      return;
+    }
 
     // Fetch peer list and features
     const peers = await electrum.request('server.peers.subscribe');
     const features = await electrum.request('server.features');
 
     // Disconnect, we don't need this anymore
-    electrum.disconnect();
+    await electrum.disconnect();
 
     // Loop through each peer
     peers.forEach((peer) => {

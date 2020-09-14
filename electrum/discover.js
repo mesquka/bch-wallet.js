@@ -6,7 +6,9 @@ const defaultServers = {
   websocket: [],
 };
 
-const processedServers = [];
+const processedServers = [
+  process.argv[2],
+];
 
 const queue = [
   { host: process.argv[2], port: parseInt(process.argv[3], 10), tries: 0 },
@@ -70,7 +72,7 @@ async function processQueue() {
         if (features.hosts[host].ssl_port) {
           // Add to defaultServer config
           defaultServers.tcp.push({
-            host,
+            host: server.host,
             port: features.hosts[host].ssl_port,
             transport: 'tcp_tls',
           });
@@ -80,7 +82,7 @@ async function processQueue() {
         if (features.hosts[host].wss_port) {
           // Add to defaultServer config
           defaultServers.websocket.push({
-            host,
+            host: server.host,
             port: features.hosts[host].wss_port,
             transport: 'wss',
           });
@@ -110,12 +112,14 @@ async function discover() {
     await processQueue();
   }
 
+  // Output server list
   console.log(JSON.stringify(defaultServers, null, 2));
 }
 
 if (process.argv[2] && process.argv[3]) {
+  // Discover server
   discover();
 } else {
   console.log('Format: node electrum/discover.js [initial host] [initial port]');
-  console.log('Example: node electrum/discover.js fulcrum.fountainhead.cashn 50002');
+  console.log('Example: node electrum/discover.js fulcrum.fountainhead.cash 50002');
 }

@@ -1,124 +1,14 @@
 {
-  "mainnet": {
-    "tcp": [
-      {
-        "host": "bch.imaginary.cash",
-        "port": 50002,
-        "transport": "tcp_tls"
-      },
-      {
-        "host": "bch2.electroncash.dk",
-        "port": 50002,
-        "transport": "tcp_tls"
-      },
-      {
-        "host": "electrum.imaginary.cash",
-        "port": 50002,
-        "transport": "tcp_tls"
-      },
-      {
-        "host": "fulcrum.fountainhead.cash",
-        "port": 50002,
-        "transport": "tcp_tls"
-      },
-      {
-        "host": "bch.loping.net",
-        "port": 50002,
-        "transport": "tcp_tls"
-      },
-      {
-        "host": "fulcrum-main.bchjs.cash",
-        "port": 50002,
-        "transport": "tcp_tls"
-      },
-      {
-        "host": "electroncash.de",
-        "port": 50002,
-        "transport": "tcp_tls"
-      },
-      {
-        "host": "electroncash.dk",
-        "port": 50002,
-        "transport": "tcp_tls"
-      },
-      {
-        "host": "bch.cyberbits.eu",
-        "port": 50002,
-        "transport": "tcp_tls"
-      },
-      {
-        "host": "bch.soul-dev.com",
-        "port": 50002,
-        "transport": "tcp_tls"
-      },
-      {
-        "host": "bch.imaginary.cash",
-        "port": 50002,
-        "transport": "tcp_tls"
-      },
-      {
-        "host": "blackie.c3-soft.com",
-        "port": 50002,
-        "transport": "tcp_tls"
-      }
-    ],
-    "websocket": [
-      {
-        "host": "bch.imaginary.cash",
-        "port": 50004,
-        "transport": "wss"
-      },
-      {
-        "host": "bch2.electroncash.dk",
-        "port": 50004,
-        "transport": "wss"
-      },
-      {
-        "host": "electrum.imaginary.cash",
-        "port": 50004,
-        "transport": "wss"
-      },
-      {
-        "host": "fulcrum.fountainhead.cash",
-        "port": 443,
-        "transport": "wss"
-      },
-      {
-        "host": "bch.loping.net",
-        "port": 50004,
-        "transport": "wss"
-      },
-      {
-        "host": "electroncash.de",
-        "port": 60002,
-        "transport": "wss"
-      },
-      {
-        "host": "electroncash.dk",
-        "port": 50004,
-        "transport": "wss"
-      },
-      {
-        "host": "bch.soul-dev.com",
-        "port": 50004,
-        "transport": "wss"
-      },
-      {
-        "host": "bch.imaginary.cash",
-        "port": 50004,
-        "transport": "wss"
-      },
-      {
-        "host": "blackie.c3-soft.com",
-        "port": 50004,
-        "transport": "wss"
-      }
-    ]
-  },
+  "mainnet": {},
   "testnet": {
     "tcp": [
       {
-        "host": "tbch.loping.net",
+        "host": "testnet2.imaginary.cash",
+        "port": 50002,
+        "transport": "tcp_tls"
+      },
+      {
+        "host": "blackie.c3-soft.com",
         "port": 60002,
         "transport": "tcp_tls"
       },
@@ -128,24 +18,19 @@
         "transport": "tcp_tls"
       },
       {
-        "host": "blackie.c3-soft.com",
-        "port": 60002,
-        "transport": "tcp_tls"
-      },
-      {
         "host": "tbch.loping.net",
         "port": 60002,
-        "transport": "tcp_tls"
-      },
-      {
-        "host": "testnet2.imaginary.cash",
-        "port": 50002,
         "transport": "tcp_tls"
       }
     ],
     "websocket": [
       {
-        "host": "tbch.loping.net",
+        "host": "testnet2.imaginary.cash",
+        "port": 50004,
+        "transport": "wss"
+      },
+      {
+        "host": "blackie.c3-soft.com",
         "port": 60004,
         "transport": "wss"
       },
@@ -155,18 +40,8 @@
         "transport": "wss"
       },
       {
-        "host": "blackie.c3-soft.com",
-        "port": 60004,
-        "transport": "wss"
-      },
-      {
         "host": "tbch.loping.net",
         "port": 60004,
-        "transport": "wss"
-      },
-      {
-        "host": "testnet2.imaginary.cash",
-        "port": 50004,
         "transport": "wss"
       }
     ]

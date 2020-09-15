@@ -44,6 +44,13 @@ class BCHWallet {
   gapLimit = 20;
 
   /**
+   * Addresses in this wallet
+   *
+   * @member {object<Address>}
+   */
+  addresses = {};
+
+  /**
    * Highest address index for external addresses
    *
    * @member {object<number>}
@@ -56,27 +63,6 @@ class BCHWallet {
    * @member {object<number>}
    */
   highestIndexChange = {};
-
-  /**
-   * List of confirmed UTXOs in this wallet
-   *
-   * @member {object<Array<object>>}
-   */
-  utxoConfirmed = {};
-
-  /**
-   * List of unconfirmed UTXOs in this wallet
-   *
-   * @member {object<Array<object>>}
-   */
-  utxoUnconfirmed = {};
-
-  /**
-   * List of transactions for this wallet
-   *
-   * @member {object<Array<object>>}
-   */
-  historicalTransactions = {};
 
   /**
    * BCHWallet
@@ -105,8 +91,19 @@ class BCHWallet {
     this.electrum = new Electrum(options.electrum);
   }
 
-  // TODO: Use Private Method when specification finalized:
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields
+  /**
+   * Add address to wallet
+   *
+   * @function
+   * @param {Address} address - address to add
+   */
+  addAddress(address) {
+    // Only proceed if not already present
+    if (!this.addresses[address.address]) {
+      this.addresses[address.address] = address;
+    }
+  }
+
   /**
    * Derive key from path
    *
@@ -124,51 +121,82 @@ class BCHWallet {
     const derived = bip32.fromSeed(this.#seed).derivePath(derivationPath);
 
     // Return Address object
-    return Address.fromDerived(derived, this.network);
+    return new Address(derived, this.network, this.electrum);
+  }
+
+  /**
+   * Scans derivation path for balances
+   *
+   * @function
+   * @param {string} path - derivation path to scan
+   * @param {boolean} change - if we should scan the change or external accounts
+   */
+  async scanPath(path, change) {
+    const pathKey = change ? 'highestIndexChange' : 'highestIndex';
+
+    // Start at index for this derivation path
+    let currentIndex = this[pathKey][path];
+
+    // Search through indexes until we hit the gap limit
+    while (currentIndex - this[pathKey][path] < this.gapLimit) {
+      // Derive address
+      const address = this.derive(path, currentIndex, change);
+
+      // Fetch history
+      // eslint-disable-next-line no-await-in-loop
+      const history = await address.history();
+
+      // If this address has a balance set highest index to currentIndex
+      if (history.length > 0) {
+        this[pathKey][path] = currentIndex;
+      }
+
+      this.addAddress(address);
+
+      currentIndex += 1;
+    }
+  }
+
+  /**
+   * Scan all derivation paths
+   *
+   * @returns {Promise} complete
+   */
+  scanAll() {
+    return new Promise((resolve, reject) => {
+      const promiseList = [];
+
+      this.derivationPaths.forEach((path) => {
+        promiseList.push(this.scanPath(path, false));
+        promiseList.push(this.scanPath(path, true));
+      });
+
+      Promise.all(promiseList).then(resolve).catch(reject);
+    });
   }
 
   /**
    * Clears caches and rescans wallet
    *
    * @function
+   * @returns {Promise} complete
    */
   rescan() {
-    // Reset all caches
+    // Set all derivation paths to 0
     this.highestIndex = {};
     this.highestIndexChange = {};
-    this.utxoCache = [];
-    this.historicalTransactions = [];
 
-    // Check each derivation path
     this.derivationPaths.forEach((path) => {
-      // Set highest index for this derivation path to 0
       this.highestIndex[path] = 0;
       this.highestIndexChange[path] = 0;
-
-      // Start at 0th index for this derivation path
-      let currentIndex = 0;
-
-      // Search through indexes until we hit the gap limit
-      while (currentIndex - this.highestIndex[path] <= this.gapLimit) {
-        // TODO: Derive address and check for balance
-        currentIndex += 1;
-      }
-
-      // Start at 0th index for this derivation path's change addresses
-      currentIndex = 0;
-
-      // Search through change indexes until we hit the gap limit
-      while (currentIndex - this.highestIndex[path] <= this.gapLimit) {
-        // TODO: Derive address and check for balance
-        currentIndex += 1;
-      }
     });
+
+    return this.scanAll();
   }
 
   /**
    * Get wallet address
    *
-   * @static
    * @returns {string} - wallet address
    */
   get address() {
@@ -182,7 +210,6 @@ class BCHWallet {
   /**
    * Get change wallet address
    *
-   * @static
    * @returns {string} - wallet address
    */
   get changeAddress() {
@@ -196,7 +223,6 @@ class BCHWallet {
   /**
    * Get legacy wallet address
    *
-   * @static
    * @returns {string} - wallet address
    */
   get legacyAddress() {
@@ -210,10 +236,22 @@ class BCHWallet {
   /**
    * Get SLP wallet address
    *
-   * @static
    * @returns {string} - wallet address
    */
   get slpAddress() {
+    return this.derive(
+      this.defaultDerivationPath,
+      this.highestIndex[this.defaultDerivationPath],
+      false,
+    ).slp;
+  }
+
+  /**
+   * Get SLP wallet address
+   *
+   * @returns {string} - wallet address
+   */
+  get utxos() {
     return this.derive(
       this.defaultDerivationPath,
       this.highestIndex[this.defaultDerivationPath],

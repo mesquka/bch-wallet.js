@@ -2,12 +2,6 @@ const encoder = require('./encoder');
 
 class Address {
   /**
-   * Address
-   *
-   * @class Address
-   */
-
-  /**
    * Public key
    *
    * @member {Buffer}
@@ -36,33 +30,33 @@ class Address {
   network;
 
   /**
-   * Create Address from bip32 module output
+   * Electrum instance to use for network interaction
    *
-   * @function
+   * @member {string}
+   */
+  electrum;
+
+  /**
+   * Address
+   *
+   * @class Address
    * @param {object} derived - bip32 module output
    * @param {string} network - network to use
-   * @returns {Address} Address
+   * @param {string} electrum - electrum instance to use for network interaction
    */
-  static fromDerived(derived, network) {
-    // Create Address object
-    const address = new Address();
-
-    // Set network
-    address.network = network;
+  constructor(derived, network, electrum) {
+    this.network = network;
+    this.electrum = electrum;
 
     // Set properties from derived key
-    address.public = derived.publicKey;
-    address.#private = derived.privateKey;
-    address.hash160 = derived.identifier;
-
-    // Return new object
-    return address;
+    this.public = derived.publicKey;
+    this.#private = derived.privateKey;
+    this.hash160 = derived.identifier;
   }
 
   /**
    * Get wallet address
    *
-   * @static
    * @returns {string} - wallet address
    */
   get address() {
@@ -76,7 +70,6 @@ class Address {
   /**
    * Get wallet address
    *
-   * @static
    * @returns {string} - wallet address
    */
   get legacy() {
@@ -88,17 +81,62 @@ class Address {
   }
 
   /**
-   * Get wallet address
+   * Get address address
    *
-   * @static
    * @returns {string} - wallet address
    */
   get slp() {
     return encoder.encodeCashaddress(
-      'simpleledger',
+      this.network === 'mainnet' ? 'simpleledger' : 'slptest',
       'P2PKH',
       this.hash160,
     );
+  }
+
+  /**
+   * Get address history
+   *
+   * @function
+   * @returns {Promise<Array<Transaction>>} - Array of historical transactions
+   */
+  async history() {
+    const history = await this.electrum.request('blockchain.address.get_history', this.address);
+    // TODO fetch and decode transactions
+    return history;
+  }
+
+  /**
+   * Get address balance
+   *
+   * @function
+   * @returns {Promise<object<number>>} - Array of historical transactions
+   */
+  balance() {
+    return this.electrum.request('blockchain.address.get_balance', this.address);
+  }
+
+  /**
+   * Get address balance
+   *
+   * @function
+   * @returns {Promise<Array<Transaction>>} - Array of historical transactions
+   */
+  async unspent() {
+    const unspent = await this.electrum.request('blockchain.address.listunspent', this.address);
+    // TODO fetch and decode transactions
+    return unspent;
+  }
+
+  /**
+   * Get address balance
+   *
+   * @function
+   * @returns {Promise<Array<Transaction>>} - Array of historical transactions
+   */
+  async mempool() {
+    const unspent = await this.electrum.request('blockchain.address.get_mempool', this.address);
+    // TODO fetch and decode transactions
+    return unspent;
   }
 }
 

@@ -131,6 +131,6 @@ if (process.argv[2] && process.argv[3]) {
   // Discover server
   discover();
 } else {
-  console.log('Format: node electrum/discover.js [initial host] [initial port]');
-  console.log('Example: node electrum/discover.js fulcrum.fountainhead.cash 50002');
+  console.log('Format: node test/discover_electrum_servers.js [initial host] [initial port]');
+  console.log('Example: node test/discover_electrum_servers.js fulcrum.fountainhead.cash 50002');
 }

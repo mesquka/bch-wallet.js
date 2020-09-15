@@ -2,7 +2,7 @@
  * Encode/Decode Addresses
  * Based on Emilio Almansi's bchaddrjs (https://github.com/ealmansi/bchaddrjs)
  *
- * @module address
+ * @module encoder
  */
 
 const cashaddr = require('cashaddrjs-slp');
@@ -96,6 +96,12 @@ function decodeCashaddress(address) {
         return {
           hash160: Buffer.from(decoded.hash),
           network: 'mainnet',
+          type: decoded.type,
+        };
+      case 'slptest':
+        return {
+          hash160: Buffer.from(decoded.hash),
+          network: 'testnet',
           type: decoded.type,
         };
       case 'bchtest':

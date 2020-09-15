@@ -37,12 +37,35 @@ async function test() {
     assert(slp === vector.slp);
     assert(encoder.validate(slp));
     assert(encoder.validateCashaddress(slp));
+
+    const addressTestnet = encoder.encodeCashaddress('bchtest', 'P2PKH', vector.hash160);
+    console.log(addressTestnet);
+    assert(encoder.decodeCashaddress(addressTestnet).hash160.equals(vector.hash160));
+    assert(addressTestnet === vector.addressTestnet);
+    assert(encoder.validate(addressTestnet));
+    assert(encoder.validateCashaddress(addressTestnet));
+
+    const legacyTestnet = encoder.encodeLegacy('testnet', 'P2PKH', vector.hash160);
+    console.log(legacyTestnet);
+    assert(encoder.decodeLegacy(legacyTestnet).hash160.equals(vector.hash160));
+    assert(legacyTestnet === vector.legacyTestnet);
+    assert(encoder.validate(legacyTestnet));
+    assert(encoder.validateLegacyaddress(legacyTestnet));
+
+    const slpTestnet = encoder.encodeCashaddress('slptest', 'P2PKH', vector.hash160);
+    console.log(slpTestnet);
+    assert(encoder.decodeCashaddress(slpTestnet).hash160.equals(vector.hash160));
+    assert(slpTestnet === vector.slpTestnet);
+    assert(encoder.validate(slpTestnet));
+    assert(encoder.validateCashaddress(slpTestnet));
   });
 
   console.log('\n\nRUNNING WALLET TESTS');
 
   console.log('\nTESTING WALLET CREATION');
-  const wallet = new Wallet(testVectors.mnemonic);
+  const wallet = new Wallet(testVectors.mnemonic, {
+    network: 'testnet',
+  });
   console.log(wallet);
 
   console.log('\nTESTING ADDRESS DERIVATION');
@@ -51,10 +74,17 @@ async function test() {
     const address = wallet.derive(wallet.defaultDerivationPath, index, false);
     console.log(address);
     assert(address.public.equals(vector.public));
-    assert(address.address === vector.address);
-    assert(address.slp === vector.slp);
-    assert(address.legacy === vector.legacy);
+    assert(address.address === vector.addressTestnet);
+    assert(address.slp === vector.slpTestnet);
+    assert(address.legacy === vector.legacyTestnet);
   });
+
+  console.log('\nSCANNING ADDRESSES');
+
+  console.time('wallet scan');
+  await wallet.rescan();
+  console.timeEnd('wallet scan');
+  console.log(`Scanned ${Object.keys(wallet.addresses).length} addresses`);
 
   process.exit();
 }

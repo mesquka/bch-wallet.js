@@ -151,6 +151,7 @@ class BCHWallet {
         this[pathKey][path] = currentIndex;
       }
 
+      // Add address to wallet
       this.addAddress(address);
 
       currentIndex += 1;

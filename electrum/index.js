@@ -100,14 +100,14 @@ class Electrum {
     // Queue request until connection is ready
     await this.client.ready();
 
-    // Intercept address/scripthas subscriptions
+    // Intercept address/scripthash subscriptions
     if (method === 'blockchain.address.subscribe' || method === 'blockchain.scripthash.subscribe') {
       // Add to our subscription pool
       this.addressSubscriptions[params[0]] = this.addressSubscriptions[params[0]] || [];
       this.addressSubscriptions[params[0]].push(callback);
 
-      // Send as normal request to update server on subscriptions bypassing electrum-cash
-      this.client.subscribe(this.handleAddressSubscription.bind(this), method, ...params);
+      // Handle subscription with specific handler
+      return this.client.subscribe(this.handleAddressSubscription.bind(this), method, ...params);
     }
 
     // Handle subscription normally

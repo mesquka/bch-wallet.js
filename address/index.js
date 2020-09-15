@@ -101,8 +101,9 @@ class Address {
    */
   async history() {
     const history = await this.electrum.request('blockchain.address.get_history', this.address);
-    // TODO fetch and decode transactions
-    return history;
+
+    // TODO decode transactions
+    return Promise.all(history.map(async (tx) => this.electrum.request('blockchain.transaction.get', tx.tx_hash, true)));
   }
 
   /**
@@ -123,8 +124,9 @@ class Address {
    */
   async unspent() {
     const unspent = await this.electrum.request('blockchain.address.listunspent', this.address);
-    // TODO fetch and decode transactions
-    return unspent;
+
+    // TODO decode transactions
+    return Promise.all(unspent.map(async (tx) => this.electrum.request('blockchain.transaction.get', tx.tx_hash)));
   }
 
   /**
@@ -135,8 +137,19 @@ class Address {
    */
   async mempool() {
     const unspent = await this.electrum.request('blockchain.address.get_mempool', this.address);
-    // TODO fetch and decode transactions
-    return unspent;
+
+    // TODO decode transactions
+    return Promise.all(unspent.map(async (tx) => this.electrum.request('blockchain.transaction.get', tx.tx_hash)));
+  }
+
+  /**
+   * Get callback when activity occurs on this address
+   *
+   * @param {Function} callback - function to call
+   * @returns {Promise} finished
+   */
+  subscribe(callback) {
+    return this.electrum.subscribe(callback, 'blockchain.address.subscribe', this.address);
   }
 }
 

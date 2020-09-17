@@ -1,74 +1,76 @@
+const BufferReader = require('../utils/BufferReader');
+const Input = require('./input');
+const Output = require('./output');
+
+/**
+ * Transaction
+ *
+ * @class
+ */
 class Transaction {
   /**
-   * Transaction
+   * Transaction version (BigNumber)
    *
-   * @class
+   * @member {object}
    */
+  version;
 
   /**
-   * Transaction version
+   * Transaction nLockTime (BigNumber)
    *
-   * @member {Array}
+   * @member {object}
    */
-  version = '';
+  nLockTime;
 
   /**
    * Transaction inputs
    *
-   * @member {Array}
+   * @member {Array<Input>}
    */
   vin = [];
 
   /**
    * Transaction outputs
    *
-   * @member {Array}
+   * @member {Array<Output>}
    */
   vout = [];
 
   /**
-   * Loads hex data into transaction
+   * Creates Transaction object from BufferReader
    *
-   * @function
-   * @param {string} txhex - hex representation of transaction
+   * @static
+   * @param {BufferReader} reader - BufferReader of transaction data
+   * @returns {Transaction} transaction
    */
-  loadHex(txhex) {
-    // Load txhex into buffer
-    const txBuffer = Buffer.from(txhex, 'hex');
-
-    // Keep track of our offset
-    let pos = 0;
+  static fromBufferReader(reader) {
+    const transaction = new Transaction();
 
     // Read version bytes
-    this.version = txBuffer.readInt32LE(pos);
-    pos += 4;
+    transaction.version = reader.readInt32LE();
 
-    // Read size of vin size int
-    const vinNumSize = txBuffer.readUInt8(pos);
-    pos += 1;
+    // Fetch number of inputs
+    const txInNum = reader.readVarInt();
 
-    // Read vin size
-    let vinNum = 0;
-    switch (vinNumSize) {
-      case 0xFD:
-        vinNum = txBuffer.readUInt16LE(pos);
-        pos += 2;
-        break;
-      case 0xFE:
-        vinNum = txBuffer.readUInt32LE(pos);
-        pos += 4;
-        break;
-      case 0xFF:
-        vinNum = txBuffer.readUInt64LE(pos);
-        pos += 8;
-        break;
-      default:
-        vinNum = vinNumSize;
+    // Loop through each input and decode
+    for (let i = 0; i < txInNum; i += 1) {
+      const input = Input.fromBufferReader(reader);
+      transaction.vin.push(input);
     }
 
-    for (let i = 0; i < vinNum; i += 1) {
-      
+    // Fetch number of outputs
+    const txOutNum = reader.readVarInt();
+
+    // Loop through each input and decode
+    for (let i = 0; i < txOutNum; i += 1) {
+      const output = Output.fromBufferReader(reader);
+      transaction.vout.push(output);
     }
+
+    // Read nLockTime
+    transaction.nLockTime = reader.readUInt32LE();
+
+    return transaction;
   }
 
   /**
@@ -89,13 +91,9 @@ class Transaction {
    * @returns {Transaction} transaction
    */
   static fromHex(txhex) {
-    // Instantiate transaction object
-    const transaction = new Transaction();
-
-    // Load data from hex bytes
-    transaction.loadHex(txhex);
-
-    return transaction;
+    return Transaction.fromBufferReader(
+      BufferReader.from(txhex, 'hex'),
+    );
   }
 }
 

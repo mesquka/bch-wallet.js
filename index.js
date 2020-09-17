@@ -142,12 +142,9 @@ class BCHWallet {
       // Derive address
       const address = this.derive(path, currentIndex, change);
 
-      // Fetch history
+      // If this address has activity set highest index to currentIndex
       // eslint-disable-next-line no-await-in-loop
-      const history = await address.history();
-
-      // If this address has a balance set highest index to currentIndex
-      if (history.length > 0) {
+      if (await address.activity()) {
         this[pathKey][path] = currentIndex;
       }
 

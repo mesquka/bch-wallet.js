@@ -1,4 +1,5 @@
 const encoder = require('./encoder');
+const Transaction = require('../transaction');
 
 class Address {
   /**
@@ -94,16 +95,31 @@ class Address {
   }
 
   /**
+   * Checks if address has activity
+   *
+   * @function
+   * @returns {Promise<boolean>} - Address has activity
+   */
+  async activity() {
+    // Get history, return true if not empty
+    return (await this.electrum.request('blockchain.address.get_history', this.address)).length > 0;
+  }
+
+  /**
    * Get address history
    *
    * @function
    * @returns {Promise<Array<Transaction>>} - Array of historical transactions
    */
   async history() {
+    // Fetch list of txids
     const history = await this.electrum.request('blockchain.address.get_history', this.address);
 
-    // TODO decode transactions
-    return Promise.all(history.map(async (tx) => this.electrum.request('blockchain.transaction.get', tx.tx_hash, true)));
+    // Fetch transactions
+    const txlist = await Promise.all(history.map(async (tx) => this.electrum.request('blockchain.transaction.get', tx.tx_hash)));
+
+    // Return array of transctions
+    return txlist.map((txhex) => Transaction.fromHex(txhex));
   }
 
   /**
@@ -123,10 +139,14 @@ class Address {
    * @returns {Promise<Array<Transaction>>} - Array of historical transactions
    */
   async unspent() {
+    // Fetch list of txids
     const unspent = await this.electrum.request('blockchain.address.listunspent', this.address);
 
-    // TODO decode transactions
-    return Promise.all(unspent.map(async (tx) => this.electrum.request('blockchain.transaction.get', tx.tx_hash)));
+    // Fetch transactions
+    const txlist = await Promise.all(unspent.map(async (tx) => this.electrum.request('blockchain.transaction.get', tx.tx_hash)));
+
+    // Return array of transctions
+    return txlist.forEach((txhex) => Transaction.fromHex(txhex));
   }
 
   /**
@@ -136,10 +156,14 @@ class Address {
    * @returns {Promise<Array<Transaction>>} - Array of historical transactions
    */
   async mempool() {
+    // Fetch list of txids
     const unspent = await this.electrum.request('blockchain.address.get_mempool', this.address);
 
-    // TODO decode transactions
-    return Promise.all(unspent.map(async (tx) => this.electrum.request('blockchain.transaction.get', tx.tx_hash)));
+    // Fetch transactions
+    const txlist = await Promise.all(unspent.map(async (tx) => this.electrum.request('blockchain.transaction.get', tx.tx_hash)));
+
+    // Return array of transctions
+    return txlist.forEach((txhex) => Transaction.fromHex(txhex));
   }
 
   /**

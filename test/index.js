@@ -2,7 +2,8 @@
 const assert = require('assert');
 const testVectors = require('./testVectors');
 const Wallet = require('../index');
-const encoder = require('../address/encoder');
+const Transaction = require('../transaction');
+const addressEncoder = require('../address/encoder');
 
 /**
  * Wrap in async function so we can use await if needed
@@ -17,47 +18,53 @@ async function test() {
 
     console.log(vector.hash160);
 
-    const address = encoder.encodeCashaddress('bitcoincash', 'P2PKH', vector.hash160);
+    const address = addressEncoder.encodeCashaddress('bitcoincash', 'P2PKH', vector.hash160);
     console.log(address);
-    assert(encoder.decodeCashaddress(address).hash160.equals(vector.hash160));
+    assert(addressEncoder.decodeCashaddress(address).hash160.equals(vector.hash160));
     assert(address === vector.address);
-    assert(encoder.validate(address));
-    assert(encoder.validateCashaddress(address));
+    assert(addressEncoder.validate(address));
+    assert(addressEncoder.validateCashaddress(address));
 
-    const legacy = encoder.encodeLegacy('mainnet', 'P2PKH', vector.hash160);
+    const legacy = addressEncoder.encodeLegacy('mainnet', 'P2PKH', vector.hash160);
     console.log(legacy);
-    assert(encoder.decodeLegacy(legacy).hash160.equals(vector.hash160));
+    assert(addressEncoder.decodeLegacy(legacy).hash160.equals(vector.hash160));
     assert(legacy === vector.legacy);
-    assert(encoder.validate(legacy));
-    assert(encoder.validateLegacyaddress(legacy));
+    assert(addressEncoder.validate(legacy));
+    assert(addressEncoder.validateLegacyaddress(legacy));
 
-    const slp = encoder.encodeCashaddress('simpleledger', 'P2PKH', vector.hash160);
+    const slp = addressEncoder.encodeCashaddress('simpleledger', 'P2PKH', vector.hash160);
     console.log(slp);
-    assert(encoder.decodeCashaddress(slp).hash160.equals(vector.hash160));
+    assert(addressEncoder.decodeCashaddress(slp).hash160.equals(vector.hash160));
     assert(slp === vector.slp);
-    assert(encoder.validate(slp));
-    assert(encoder.validateCashaddress(slp));
+    assert(addressEncoder.validate(slp));
+    assert(addressEncoder.validateCashaddress(slp));
 
-    const addressTestnet = encoder.encodeCashaddress('bchtest', 'P2PKH', vector.hash160);
+    const addressTestnet = addressEncoder.encodeCashaddress('bchtest', 'P2PKH', vector.hash160);
     console.log(addressTestnet);
-    assert(encoder.decodeCashaddress(addressTestnet).hash160.equals(vector.hash160));
+    assert(addressEncoder.decodeCashaddress(addressTestnet).hash160.equals(vector.hash160));
     assert(addressTestnet === vector.addressTestnet);
-    assert(encoder.validate(addressTestnet));
-    assert(encoder.validateCashaddress(addressTestnet));
+    assert(addressEncoder.validate(addressTestnet));
+    assert(addressEncoder.validateCashaddress(addressTestnet));
 
-    const legacyTestnet = encoder.encodeLegacy('testnet', 'P2PKH', vector.hash160);
+    const legacyTestnet = addressEncoder.encodeLegacy('testnet', 'P2PKH', vector.hash160);
     console.log(legacyTestnet);
-    assert(encoder.decodeLegacy(legacyTestnet).hash160.equals(vector.hash160));
+    assert(addressEncoder.decodeLegacy(legacyTestnet).hash160.equals(vector.hash160));
     assert(legacyTestnet === vector.legacyTestnet);
-    assert(encoder.validate(legacyTestnet));
-    assert(encoder.validateLegacyaddress(legacyTestnet));
+    assert(addressEncoder.validate(legacyTestnet));
+    assert(addressEncoder.validateLegacyaddress(legacyTestnet));
 
-    const slpTestnet = encoder.encodeCashaddress('slptest', 'P2PKH', vector.hash160);
+    const slpTestnet = addressEncoder.encodeCashaddress('slptest', 'P2PKH', vector.hash160);
     console.log(slpTestnet);
-    assert(encoder.decodeCashaddress(slpTestnet).hash160.equals(vector.hash160));
+    assert(addressEncoder.decodeCashaddress(slpTestnet).hash160.equals(vector.hash160));
     assert(slpTestnet === vector.slpTestnet);
-    assert(encoder.validate(slpTestnet));
-    assert(encoder.validateCashaddress(slpTestnet));
+    assert(addressEncoder.validate(slpTestnet));
+    assert(addressEncoder.validateCashaddress(slpTestnet));
+  });
+
+  console.log('\nTESTING TRANSACTION ENCODING/DECODING');
+  testVectors.transactions.forEach((vector) => {
+    const transaction = Transaction.fromHex(vector.hex);
+    console.log(transaction);
   });
 
   console.log('\n\nRUNNING WALLET TESTS');

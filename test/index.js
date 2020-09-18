@@ -63,8 +63,22 @@ async function test() {
 
   console.log('\nTESTING TRANSACTION ENCODING/DECODING');
   testVectors.transactions.forEach((vector) => {
+    console.log();
+    console.log(vector.hex);
     const transaction = Transaction.fromHex(vector.hex);
     console.log(transaction);
+    assert(transaction.hex === vector.hex);
+    assert(transaction.hash === vector.hash);
+    assert(transaction.version.eq(vector.version));
+    vector.vin.forEach((input, index) => {
+      assert(transaction.vin[index].prevTxID === input.prevTxID);
+      assert(transaction.vin[index].script === input.script);
+      assert(transaction.vin[index].sequenceNumber.eq(input.sequenceNumber));
+    });
+    vector.vout.forEach((output, index) => {
+      assert(transaction.vout[index].script === output.script);
+      assert(transaction.vout[index].satoshis.eq(output.satoshis));
+    });
   });
 
   console.log('\n\nRUNNING WALLET TESTS');
@@ -78,6 +92,7 @@ async function test() {
   console.log('\nTESTING ADDRESS DERIVATION');
 
   testVectors.derivations.forEach((vector, index) => {
+    console.log();
     const address = wallet.derive(wallet.defaultDerivationPath, index, false);
     console.log(address);
     assert(address.public.equals(vector.public));

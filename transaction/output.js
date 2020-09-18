@@ -1,19 +1,44 @@
-const BufferReader = require('../utils/BufferReader');
+const BN = require('bn.js');
+const BufferReader = require('../utils/bufferreader');
+const BufferWriter = require('../utils/bufferwriter');
 
 class Output {
   /**
-   * Output satoshis (BigNumber)
+   * Output satoshis
    *
-   * @member {object}
+   * @member {BN}
    */
   satoshis;
 
   /**
-   * Output satoshis (BigNumber)
+   * Output satoshis
    *
-   * @member {string}
+   * @member {BN}
    */
   script;
+
+  /**
+   * Serializes output to buffer
+   *
+   * @returns {Buffer} buffer
+   */
+  get buffer() {
+    const writer = new BufferWriter();
+
+    writer.writeUInt64LE(this.satoshis);
+    writer.writeVarLengthBuffer(Buffer.from(this.script, 'hex'));
+
+    return writer.buffer;
+  }
+
+  /**
+   * Serializes output to hex string
+   *
+   * @returns {string} hex
+   */
+  get hex() {
+    return this.buffer.toString('hex');
+  }
 
   /**
    * Creates Transaction object from BufferReader

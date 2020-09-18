@@ -1,4 +1,6 @@
-const BufferReader = require('../utils/BufferReader');
+const BN = require('bn.js');
+const BufferReader = require('../utils/bufferreader');
+const BufferWriter = require('../utils/bufferwriter');
 
 class Input {
   /**
@@ -11,7 +13,7 @@ class Input {
   /**
    * Output index we're spending from
    *
-   * @member {string}
+   * @member {BN}
    */
   outputIndex;
 
@@ -23,15 +25,41 @@ class Input {
   script;
 
   /**
-   * Sequence Number (BigNumber)
+   * Sequence Number
    *
-   * @member {object}
+   * @member {BN}
    */
   sequenceNumber;
 
   /**
+   * Serializes input to buffer
+   *
+   * @returns {Buffer} buffer
+   */
+  get buffer() {
+    const writer = new BufferWriter();
+
+    writer.writeReverse(Buffer.from(this.prevTxID, 'hex'));
+    writer.writeUInt32LE(this.outputIndex);
+    writer.writeVarLengthBuffer(Buffer.from(this.script, 'hex'));
+    writer.writeUInt32LE(this.sequenceNumber);
+
+    return writer.buffer;
+  }
+
+  /**
+   * Serializes input to hex string
+   *
+   * @returns {string} hex
+   */
+  get hex() {
+    return this.buffer.toString('hex');
+  }
+
+  /**
    * Creates Transaction object from BufferReader
    *
+   * @static
    * @param {BufferReader} reader - BufferReader of input data
    * @returns {Input} input
    */

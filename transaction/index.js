@@ -1,4 +1,7 @@
-const BufferReader = require('../utils/BufferReader');
+const BN = require('bn.js');
+const sha256 = require('js-sha256');
+const BufferReader = require('../utils/bufferreader');
+const BufferWriter = require('../utils/bufferwriter');
 const Input = require('./input');
 const Output = require('./output');
 
@@ -9,16 +12,16 @@ const Output = require('./output');
  */
 class Transaction {
   /**
-   * Transaction version (BigNumber)
+   * Transaction version
    *
-   * @member {object}
+   * @member {BN}
    */
   version;
 
   /**
-   * Transaction nLockTime (BigNumber)
+   * Transaction nLockTime
    *
-   * @member {object}
+   * @member {BN}
    */
   nLockTime;
 
@@ -74,13 +77,59 @@ class Transaction {
   }
 
   /**
+   * Get transaction as buffer
+   *
+   * @returns {Buffer} - transaction bytes
+   */
+  get buffer() {
+    const writer = new BufferWriter();
+
+    // Write version bytes
+    writer.writeInt32LE(this.version);
+
+    // Write number of inputs
+    writer.writeVarInt(new BN(this.vin.length));
+
+    // Write inputs
+    this.vin.forEach((input) => {
+      writer.write(input.buffer);
+    });
+
+    // Write number of outputs
+    writer.writeVarInt(new BN(this.vout.length));
+
+    // Write outputs
+    this.vout.forEach((output) => {
+      writer.write(output.buffer);
+    });
+
+    // Write nLockTime
+    writer.writeUInt32LE(this.nLockTime);
+
+    return writer.buffer;
+  }
+
+  /**
    * Get transaction as hex
    *
    * @returns {string} - hex represented bytes
    */
   get hex() {
-    // TODO: Serialize to hex
-    return this;
+    return this.buffer.toString('hex');
+  }
+
+  /**
+   * Get transaction hash
+   *
+   * @returns {string} - hex represented bytes
+   */
+  get hash() {
+    // Double sha256 the serialized transaction and reverse endianess
+    return Buffer.from(
+      sha256.array(
+        sha256.array(this.buffer),
+      ),
+    ).reverse().toString('hex');
   }
 
   /**

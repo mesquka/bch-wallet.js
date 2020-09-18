@@ -1,4 +1,4 @@
-const BigNumber = require('bignumber.js');
+const BN = require('bn.js');
 
 class BufferReader {
   /**
@@ -11,7 +11,7 @@ class BufferReader {
   /**
    * Cursor position
    *
-   * @member {BigNumber}
+   * @member {number}
    */
   cursor = 0;
 
@@ -42,10 +42,10 @@ class BufferReader {
    * Reads uint8
    *
    * @function
-   * @returns {BigNumber} uint8
+   * @returns {BN} uint8
    */
   readUInt8() {
-    const bn = BigNumber(this.buffer.readUInt8(this.cursor));
+    const bn = new BN(this.buffer.readUInt8(this.cursor));
     this.cursor += 1;
     return bn;
   }
@@ -54,10 +54,10 @@ class BufferReader {
    * Reads uint16 big endian
    *
    * @function
-   * @returns {BigNumber} uint16
+   * @returns {BN} uint16
    */
   readUInt16BE() {
-    const bn = BigNumber(this.buffer.readUInt16BE(this.cursor));
+    const bn = new BN(this.buffer.readUInt16BE(this.cursor));
     this.cursor += 2;
     return bn;
   }
@@ -66,10 +66,10 @@ class BufferReader {
    * Reads uint16 little endian
    *
    * @function
-   * @returns {BigNumber} uint16
+   * @returns {BN} uint16
    */
   readUInt16LE() {
-    const bn = BigNumber(this.buffer.readUInt16LE(this.cursor));
+    const bn = new BN(this.buffer.readUInt16LE(this.cursor));
     this.cursor += 2;
     return bn;
   }
@@ -78,10 +78,10 @@ class BufferReader {
    * Reads uint32 big endian
    *
    * @function
-   * @returns {BigNumber} uint32
+   * @returns {BN} uint32
    */
   readUInt32BE() {
-    const bn = BigNumber(this.buffer.readUInt32BE(this.cursor));
+    const bn = new BN(this.buffer.readUInt32BE(this.cursor));
     this.cursor += 4;
     return bn;
   }
@@ -90,10 +90,10 @@ class BufferReader {
    * Reads uint32 little endian
    *
    * @function
-   * @returns {BigNumber} uint32
+   * @returns {BN} uint32
    */
   readUInt32LE() {
-    const bn = BigNumber(this.buffer.readUInt32LE(this.cursor));
+    const bn = new BN(this.buffer.readUInt32LE(this.cursor));
     this.cursor += 4;
     return bn;
   }
@@ -102,10 +102,10 @@ class BufferReader {
    * Reads uint64 big endian
    *
    * @function
-   * @returns {BigNumber} uint64
+   * @returns {BN} uint64
    */
   readUInt64BE() {
-    const bn = BigNumber(this.buffer.readBigUInt64BE(this.cursor));
+    const bn = new BN(this.buffer.readBigUInt64BE(this.cursor));
     this.cursor += 8;
     return bn;
   }
@@ -114,10 +114,10 @@ class BufferReader {
    * Reads uint64 little endian
    *
    * @function
-   * @returns {BigNumber} uint64
+   * @returns {BN} uint64
    */
   readUInt64LE() {
-    const bn = BigNumber(this.buffer.readBigUInt64LE(this.cursor));
+    const bn = new BN(this.buffer.readBigUInt64LE(this.cursor));
     this.cursor += 8;
     return bn;
   }
@@ -126,10 +126,10 @@ class BufferReader {
    * Reads int8
    *
    * @function
-   * @returns {BigNumber} int8
+   * @returns {BN} int8
    */
   readInt8() {
-    const bn = BigNumber(this.buffer.readInt8(this.cursor));
+    const bn = new BN(this.buffer.readInt8(this.cursor));
     this.cursor += 1;
     return bn;
   }
@@ -138,10 +138,10 @@ class BufferReader {
    * Reads int16 big endian
    *
    * @function
-   * @returns {BigNumber} int16
+   * @returns {BN} int16
    */
   readInt16BE() {
-    const bn = BigNumber(this.buffer.readInt16BE(this.cursor));
+    const bn = new BN(this.buffer.readInt16BE(this.cursor));
     this.cursor += 2;
     return bn;
   }
@@ -150,10 +150,10 @@ class BufferReader {
    * Reads int16 little endian
    *
    * @function
-   * @returns {BigNumber} int16
+   * @returns {BN} int16
    */
   readInt16LE() {
-    const bn = BigNumber(this.buffer.readInt16LE(this.cursor));
+    const bn = new BN(this.buffer.readInt16LE(this.cursor));
     this.cursor += 2;
     return bn;
   }
@@ -162,10 +162,10 @@ class BufferReader {
    * Reads int32 big endian
    *
    * @function
-   * @returns {BigNumber} int32
+   * @returns {BN} int32
    */
   readInt32BE() {
-    const bn = BigNumber(this.buffer.readInt32BE(this.cursor));
+    const bn = new BN(this.buffer.readInt32BE(this.cursor));
     this.cursor += 4;
     return bn;
   }
@@ -174,10 +174,10 @@ class BufferReader {
    * Reads int32 little endian
    *
    * @function
-   * @returns {BigNumber} int32
+   * @returns {BN} int32
    */
   readInt32LE() {
-    const bn = BigNumber(this.buffer.readInt32LE(this.cursor));
+    const bn = new BN(this.buffer.readInt32LE(this.cursor));
     this.cursor += 4;
     return bn;
   }
@@ -186,10 +186,10 @@ class BufferReader {
    * Reads int64 big endian
    *
    * @function
-   * @returns {BigNumber} int64
+   * @returns {BN} int64
    */
   readInt64BE() {
-    const bn = BigNumber(this.buffer.readBigInt64BE(this.cursor));
+    const bn = new BN(this.buffer.readBigInt64BE(this.cursor));
     this.cursor += 8;
     return bn;
   }
@@ -198,10 +198,10 @@ class BufferReader {
    * Reads int64 little endian
    *
    * @function
-   * @returns {BigNumber} int64
+   * @returns {BN} int64
    */
   readInt64LE() {
-    const bn = BigNumber(this.buffer.readBigInt64LE(this.cursor));
+    const bn = new BN(this.buffer.readBigInt64LE(this.cursor));
     this.cursor += 8;
     return bn;
   }
@@ -210,7 +210,7 @@ class BufferReader {
    * Reads VarInt
    *
    * @function
-   * @returns {BigNumber} VarInt
+   * @returns {BN} VarInt
    */
   readVarInt() {
     const firstByte = this.readUInt8();

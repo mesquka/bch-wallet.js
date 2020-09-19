@@ -107,6 +107,7 @@ async function test() {
   await wallet.rescan();
   console.timeEnd('wallet scan');
   console.log(`Scanned ${Object.keys(wallet.addresses).length} addresses`);
+  console.log(wallet.highestIndex);
 
   process.exit();
 }

@@ -53,16 +53,9 @@ class BCHWallet {
   /**
    * Highest address index for external addresses
    *
-   * @member {object<number>}
+   * @member {object<object<number>>}
    */
   highestIndex = {};
-
-  /**
-   * Highest address index for change addresses
-   *
-   * @member {object<number>}
-   */
-  highestIndexChange = {};
 
   /**
    * BCHWallet
@@ -83,8 +76,9 @@ class BCHWallet {
     // Set each derivation path to 0
     this.derivationPaths.forEach((path) => {
       // Set highest index for this derivation path to 0
-      this.highestIndex[path] = 0;
-      this.highestIndexChange[path] = 0;
+      this.highestIndex[path] = {};
+      this.highestIndex[path].external = 0;
+      this.highestIndex[path].change = 0;
     });
 
     // Setup electrum connection
@@ -134,7 +128,7 @@ class BCHWallet {
    */
   scanPath(path, change) {
     return new Promise((resolve) => {
-      const pathKey = change ? 'highestIndexChange' : 'highestIndex';
+      const pathKey = change ? 'change' : 'external';
 
       // Keep track of what we're scanning and what we've already scanned
       const scanned = {};
@@ -144,6 +138,7 @@ class BCHWallet {
 
       /**
        * Helper to kick off scans
+       * This should operate fine until a depth of about 12000
        *
        * @param {number} fromIndex - index to scan from
        */
@@ -159,6 +154,7 @@ class BCHWallet {
             // Derive and add address to wallet
             const address = self.derive(path, index, change);
 
+            // Add address to wallet
             self.addAddress(address);
 
             // Check for activity
@@ -171,12 +167,13 @@ class BCHWallet {
               if (activity) {
                 scan(index);
 
-                // Set self[pathKey][path] to the highest of
-                // address index and the already present value
-                self[pathKey][path] = self[pathKey][path] < index
-                  ? self[pathKey][path] : index;
+                // Set self.highestIndex[path][pathKey] to the highest of the
+                // current address index and the already present value
+                self.highestIndex[path][pathKey] = self.highestIndex[path][pathKey] < index
+                  ? index : self.highestIndex[path][pathKey];
 
-              // If there isn't anything more to be scanned, resolve
+              // If the current address is the last to finish scanning
+              // And nothing more needs to be scanned, resolve
               } else if (Object.keys(scanning).length === 0) {
                 resolve();
               }
@@ -185,7 +182,7 @@ class BCHWallet {
         }
       }
 
-      scan(this[pathKey][path]);
+      scan(this.highestIndex[path][pathKey]);
     });
   }
 
@@ -216,11 +213,11 @@ class BCHWallet {
   rescan() {
     // Set all derivation paths to 0
     this.highestIndex = {};
-    this.highestIndexChange = {};
 
     this.derivationPaths.forEach((path) => {
-      this.highestIndex[path] = 0;
-      this.highestIndexChange[path] = 0;
+      this.highestIndex[path] = {};
+      this.highestIndex[path].external = 0;
+      this.highestIndex[path].change = 0;
     });
 
     return this.scanAll();
@@ -234,7 +231,7 @@ class BCHWallet {
   get address() {
     return this.derive(
       this.defaultDerivationPath,
-      this.highestIndex[this.defaultDerivationPath],
+      this.highestIndex[this.defaultDerivationPath].external,
       false,
     ).address;
   }
@@ -247,7 +244,7 @@ class BCHWallet {
   get changeAddress() {
     return this.derive(
       this.defaultDerivationPath,
-      this.highestChangeIndex[this.defaultDerivationPath],
+      this.highestIndex[this.defaultDerivationPath].change,
       true,
     ).address;
   }
@@ -260,7 +257,7 @@ class BCHWallet {
   get legacyAddress() {
     return this.derive(
       this.defaultDerivationPath,
-      this.highestIndex[this.defaultDerivationPath],
+      this.highestIndex[this.defaultDerivationPath].external,
       false,
     ).legacy;
   }
@@ -273,20 +270,7 @@ class BCHWallet {
   get slpAddress() {
     return this.derive(
       this.defaultDerivationPath,
-      this.highestIndex[this.defaultDerivationPath],
-      false,
-    ).slp;
-  }
-
-  /**
-   * Get SLP wallet address
-   *
-   * @returns {string} - wallet address
-   */
-  get utxos() {
-    return this.derive(
-      this.defaultDerivationPath,
-      this.highestIndex[this.defaultDerivationPath],
+      this.highestIndex[this.defaultDerivationPath].external,
       false,
     ).slp;
   }

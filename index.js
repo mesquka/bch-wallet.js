@@ -120,7 +120,7 @@ class BCHWallet {
     // Derive keys
     const derived = bip32.fromSeed(this.#seed).derivePath(derivationPath);
 
-    // Return Address object
+    // Return address
     return new Address(derived, this.network, this.electrum);
   }
 
@@ -130,29 +130,63 @@ class BCHWallet {
    * @function
    * @param {string} path - derivation path to scan
    * @param {boolean} change - if we should scan the change or external accounts
+   * @returns {Promise} complete
    */
-  async scanPath(path, change) {
-    const pathKey = change ? 'highestIndexChange' : 'highestIndex';
+  scanPath(path, change) {
+    return new Promise((resolve) => {
+      const pathKey = change ? 'highestIndexChange' : 'highestIndex';
 
-    // Start at index for this derivation path
-    let currentIndex = this[pathKey][path];
+      // Keep track of what we're scanning and what we've already scanned
+      const scanned = {};
+      const scanning = {};
 
-    // Search through indexes until we hit the gap limit
-    while (currentIndex - this[pathKey][path] < this.gapLimit) {
-      // Derive address
-      const address = this.derive(path, currentIndex, change);
+      const self = this;
 
-      // If this address has activity set highest index to currentIndex
-      // eslint-disable-next-line no-await-in-loop
-      if (await address.activity()) {
-        this[pathKey][path] = currentIndex;
+      /**
+       * Helper to kick off scans
+       *
+       * @param {number} fromIndex - index to scan from
+       */
+      function scan(fromIndex) {
+        for (let i = 0; i <= self.gapLimit; i += 1) {
+          const index = fromIndex + i;
+
+          // Skip if we've already scanned or are scanning this index
+          if (!scanned[index] && !scanning[index]) {
+            // Add to scanning list
+            scanning[index] = true;
+
+            // Derive and add address to wallet
+            const address = self.derive(path, index, change);
+
+            self.addAddress(address);
+
+            // Check for activity
+            address.activity().then((activity) => {
+              // Move from scanning to scanned
+              delete scanning[index];
+              scanned[index] = true;
+
+              // If there is activity, scan further
+              if (activity) {
+                scan(index);
+
+                // Set self[pathKey][path] to the highest of
+                // address index and the already present value
+                self[pathKey][path] = self[pathKey][path] < index
+                  ? self[pathKey][path] : index;
+
+              // If there isn't anything more to be scanned, resolve
+              } else if (Object.keys(scanning).length === 0) {
+                resolve();
+              }
+            });
+          }
+        }
       }
 
-      // Add address to wallet
-      this.addAddress(address);
-
-      currentIndex += 1;
-    }
+      scan(this[pathKey][path]);
+    });
   }
 
   /**

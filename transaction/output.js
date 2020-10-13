@@ -11,7 +11,7 @@ class Output {
   satoshis;
 
   /**
-   * Output satoshis
+   * Locking script
    *
    * @member {BN}
    */

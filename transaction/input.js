@@ -18,7 +18,7 @@ class Input {
   outputIndex;
 
   /**
-   * Bitcoin Script
+   * Unlocking Script
    *
    * @member {string}
    */

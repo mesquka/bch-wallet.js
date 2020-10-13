@@ -4,6 +4,7 @@ const testVectors = require('./testVectors');
 const Wallet = require('../index');
 const Transaction = require('../transaction');
 const addressEncoder = require('../address/encoder');
+const script = require('../script');
 
 /**
  * Wrap in async function so we can use await if needed
@@ -11,8 +12,15 @@ const addressEncoder = require('../address/encoder');
 async function test() {
   console.log('\n\nRUNNING ADDRESS TESTS');
 
-  console.log('\nTESTING ENCODER');
+  console.log('\nTESTING SCRIPT COMPILER');
+  testVectors.scripts.forEach((scriptVector) => {
+    console.log(scriptVector.asm);
+    const compiled = script.compile(scriptVector.asm);
+    assert(compiled === scriptVector.hex);
+    assert(script.decompile(compiled) === scriptVector.asm);
+  });
 
+  console.log('\nTESTING ENCODER');
   testVectors.derivations.forEach((vector) => {
     console.log();
 

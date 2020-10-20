@@ -91,6 +91,8 @@ function OP_ELSE(vm) {
     return true;
   }
 
+  vm.cursor += 1;
+
   // Block execution bit was true, wind forward till we hit an OP_ELSE or OP_IF
   while (
     vm.cursor < vm.script.length

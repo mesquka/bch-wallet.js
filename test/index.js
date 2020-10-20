@@ -20,6 +20,24 @@ async function test() {
     assert(script.decompile(compiled) === scriptVector.asm);
   });
 
+  console.log('\nTESTING VM');
+  testVectors.vm.forEach((vector) => {
+    console.log(vector.name);
+    const vm = new script.VM();
+    vm.script = vector.test.split(' ');
+    vm.transaction = vector.transaction;
+    vm.execute();
+    console.log(vm);
+    vm.stack.forEach((value, index) => {
+      assert(value.eq(vector.expectedStack[index]));
+    });
+    assert(vm.stack.length === vector.expectedStack.length);
+    vm.altStack.forEach((value, index) => {
+      assert(value.eq(vector.expectedAltStack[index]));
+    });
+    assert(vm.altStack.length === vector.expectedAltStack.length);
+  });
+
   console.log('\nTESTING ENCODER');
   testVectors.derivations.forEach((vector) => {
     console.log();

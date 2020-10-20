@@ -1,5 +1,7 @@
 const { ElectrumCluster } = require('electrum-cash');
-const defaults = require('./defaults.json');
+
+// Output from https://github.com/mesquka/electrum-seed-cash
+const defaultServers = require('./servers.json');
 
 const isNode = typeof process !== 'undefined'
   && process.versions != null
@@ -29,12 +31,45 @@ class Electrum {
   constructor(options) {
     options = options || {};
     options.network = options.network || 'mainnet';
-    options.threshold = options.threshold || defaults[options.network].threshold;
+    options.threshold = options.threshold || { confidence: 2, distribution: 3 };
 
+    // If we're in a nodejs environment, use TCP as well as websockets
     if (isNode) {
-      options.servers = options.servers || defaults[options.network].tcp;
+      const servers = [];
+
+      // Loop through servers and push to servers array
+      defaultServers[options.network].forEach((server) => {
+        if (server.transports.ssl_port) {
+          servers.push({
+            host: server.host,
+            port: server.transports.ssl_port,
+            transport: 'tcp_tls',
+          });
+        } else if (server.transports.wss_port) {
+          servers.push({
+            host: server.host,
+            port: server.transports.wss_port,
+            transport: 'wss',
+          });
+        }
+      });
+
+      options.servers = options.servers || servers;
     } else {
-      options.servers = options.servers || defaults[options.network].websocket;
+      const servers = [];
+
+      // Loop through servers and push to servers array
+      defaultServers[options.network].forEach((server) => {
+        if (server.transports.wss_port) {
+          servers.push({
+            host: server.host,
+            port: server.transports.wss_port,
+            transport: 'wss',
+          });
+        }
+      });
+
+      options.servers = options.servers || servers;
     }
 
     // Instantiate client

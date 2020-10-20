@@ -1,0 +1,250 @@
+{
+  "mainnet": [
+    {
+      "host": "bch.cyberbits.eu",
+      "transports": {
+        "ssl_port": 50002
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "mainnet",
+      "last_seen": 1603156271536
+    },
+    {
+      "host": "bch.imaginary.cash",
+      "transports": {
+        "ssl_port": 50002,
+        "tcp_port": 50001,
+        "ws_port": 50003,
+        "wss_port": 50004
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "mainnet",
+      "last_seen": 1603156271456
+    },
+    {
+      "host": "bch.loping.net",
+      "transports": {
+        "ssl_port": 50002,
+        "tcp_port": 50001,
+        "ws_port": 50003,
+        "wss_port": 50004
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "mainnet",
+      "last_seen": 1603156270553
+    },
+    {
+      "host": "bch.soul-dev.com",
+      "transports": {
+        "ssl_port": 50002,
+        "wss_port": 50004
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "mainnet",
+      "last_seen": 1603156271290
+    },
+    {
+      "host": "bch2.electroncash.dk",
+      "transports": {
+        "ssl_port": 50002,
+        "tcp_port": 50001,
+        "wss_port": 50004
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "mainnet",
+      "last_seen": 1603156271808
+    },
+    {
+      "host": "blackie.c3-soft.com",
+      "transports": {
+        "ssl_port": 50002,
+        "tcp_port": 50001,
+        "ws_port": 50003,
+        "wss_port": 50004
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "mainnet",
+      "last_seen": 1603156272263
+    },
+    {
+      "host": "electroncash.de",
+      "transports": {
+        "ssl_port": 50002,
+        "tcp_port": 50001,
+        "ws_port": 60001,
+        "wss_port": 60002
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "mainnet",
+      "last_seen": 1603156273165
+    },
+    {
+      "host": "electroncash.dk",
+      "transports": {
+        "ssl_port": 50002,
+        "tcp_port": 50001,
+        "wss_port": 50004
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "mainnet",
+      "last_seen": 1603152673120
+    },
+    {
+      "host": "electrum.imaginary.cash",
+      "transports": {
+        "ssl_port": 50002,
+        "tcp_port": 50001,
+        "ws_port": 50003,
+        "wss_port": 50004
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "mainnet",
+      "last_seen": 1603145472812
+    },
+    {
+      "host": "fulcrum-main.bchjs.cash",
+      "transports": {
+        "ssl_port": 50002,
+        "tcp_port": 50001
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "mainnet",
+      "last_seen": 1603141507519
+    },
+    {
+      "host": "fulcrum.devops.cash",
+      "transports": {
+        "ssl_port": 50002,
+        "tcp_port": 50001,
+        "ws_port": 50003,
+        "wss_port": 50004
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "mainnet",
+      "last_seen": 1603145472683
+    },
+    {
+      "host": "fulcrum.fountainhead.cash",
+      "transports": {
+        "ssl_port": 50002,
+        "tcp_port": 50001,
+        "ws_port": 80,
+        "wss_port": 443
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "mainnet",
+      "last_seen": 1603145472951
+    },
+    {
+      "host": "fulcrumtest.generalprotocols.com",
+      "transports": {
+        "ssl_port": 50002,
+        "tcp_port": 50001,
+        "ws_port": 50003,
+        "wss_port": 50004
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "mainnet",
+      "last_seen": 1603145473031
+    },
+    {
+      "host": "kingbch.com",
+      "transports": {
+        "ssl_port": 50002,
+        "tcp_port": 50001
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "mainnet",
+      "last_seen": 1603141507244
+    }
+  ],
+  "testnet": [
+    {
+      "host": "blackie.c3-soft.com",
+      "transports": {
+        "ssl_port": 60002,
+        "tcp_port": 60001,
+        "ws_port": 60003,
+        "wss_port": 60004
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "testnet",
+      "last_seen": 1603141404520
+    },
+    {
+      "host": "tbch.loping.net",
+      "transports": {
+        "ssl_port": 60002,
+        "tcp_port": 60001,
+        "ws_port": 60003,
+        "wss_port": 60004
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "testnet",
+      "last_seen": 1603145472408
+    },
+    {
+      "host": "testnet2.imaginary.cash",
+      "transports": {
+        "ssl_port": 50002,
+        "tcp_port": 50001,
+        "ws_port": 50003,
+        "wss_port": 50004
+      },
+      "version": {
+        "max": "1.4.4",
+        "min": "1.4"
+      },
+      "network": "testnet",
+      "last_seen": 1603141507711
+    }
+  ]
+}

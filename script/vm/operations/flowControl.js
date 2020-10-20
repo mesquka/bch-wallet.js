@@ -19,6 +19,11 @@ function OP_NOP(vm) {
  * @returns {boolean} isValid
  */
 function OP_IF(vm) {
+  // No stack overflows
+  if (vm.stack.length < 1) {
+    return false;
+  }
+
   const value = vm.stack.pop();
 
   // If value is true set block execution bit to true and return
@@ -49,6 +54,11 @@ function OP_IF(vm) {
  * @returns {boolean} isValid
  */
 function OP_NOTIF(vm) {
+  // No stack overflows
+  if (vm.stack.length < 1) {
+    return false;
+  }
+
   const value = vm.stack.pop();
 
   // If value is false set block execution bit to true and return
@@ -131,6 +141,11 @@ function OP_ENDIF(vm) {
  * @returns {boolean} isValid
  */
 function OP_VERIFY(vm) {
+  // No stack overflows
+  if (vm.stack.length < 1) {
+    return false;
+  }
+
   const value = vm.stack.pop();
   vm.cursor += 1;
   return value.eq(new BN(1));

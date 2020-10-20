@@ -8,6 +8,11 @@ const VM = require('..');
  * @returns {boolean} isValid
  */
 function OP_TOALTSTACK(vm) {
+  // No stack overflows
+  if (vm.stack.length < 1) {
+    return false;
+  }
+
   vm.altStack.push(vm.stack.pop());
   vm.cursor += 1;
   return true;
@@ -20,6 +25,11 @@ function OP_TOALTSTACK(vm) {
  * @returns {boolean} isValid
  */
 function OP_FROMALTSTACK(vm) {
+  // No stack overflows
+  if (vm.altStack.length < 1) {
+    return false;
+  }
+
   vm.stack.push(vm.altStack.pop());
   vm.cursor += 1;
   return true;
@@ -32,6 +42,11 @@ function OP_FROMALTSTACK(vm) {
  * @returns {boolean} isValid
  */
 function OP_IFDUP(vm) {
+  // No stack overflows
+  if (vm.stack.length < 1) {
+    return false;
+  }
+
   if (!vm.stack[vm.stack.length - 1].eq(new BN(0))) {
     vm.stack.push(vm.stack[vm.stack.length - 1]);
   }
@@ -60,6 +75,11 @@ function OP_DEPTH(vm) {
  * @returns {boolean} isValid
  */
 function OP_DROP(vm) {
+  // No stack overflows
+  if (vm.stack.length < 1) {
+    return false;
+  }
+
   vm.stack.pop();
 
   vm.cursor += 1;
@@ -73,6 +93,11 @@ function OP_DROP(vm) {
  * @returns {boolean} isValid
  */
 function OP_DUP(vm) {
+  // No stack overflows
+  if (vm.stack.length < 1) {
+    return false;
+  }
+
   vm.stack.push(vm.stack[vm.stack.length - 1]);
 
   vm.cursor += 1;
@@ -86,6 +111,11 @@ function OP_DUP(vm) {
  * @returns {boolean} isValid
  */
 function OP_NIP(vm) {
+  // No stack overflows
+  if (vm.stack.length < 2) {
+    return false;
+  }
+
   vm.stack.splice(-2, 1);
 
   vm.cursor += 1;
@@ -99,6 +129,11 @@ function OP_NIP(vm) {
  * @returns {boolean} isValid
  */
 function OP_OVER(vm) {
+  // No stack overflows
+  if (vm.stack.length < 2) {
+    return false;
+  }
+
   vm.stack.push(vm.stack[vm.stack.length - 2]);
 
   vm.cursor += 1;
@@ -112,7 +147,17 @@ function OP_OVER(vm) {
  * @returns {boolean} isValid
  */
 function OP_PICK(vm) {
+  // No stack overflows
+  if (vm.stack.length < 1) {
+    return false;
+  }
+
   const value = vm.stack.pop();
+
+  // No stack overflows
+  if (vm.stack.length < value.toNumber()) {
+    return false;
+  }
 
   vm.stack.push(vm.stack[vm.stack.length - 1 - value.toNumber()]);
 
@@ -127,7 +172,17 @@ function OP_PICK(vm) {
  * @returns {boolean} isValid
  */
 function OP_ROLL(vm) {
+  // No stack overflows
+  if (vm.stack.length < 1) {
+    return false;
+  }
+
   const value = vm.stack.pop();
+
+  // No stack overflows
+  if (vm.stack.length < value.toNumber()) {
+    return false;
+  }
 
   vm.stack.push(vm.stack.slice(value.toNumber() * -1));
 
@@ -142,6 +197,11 @@ function OP_ROLL(vm) {
  * @returns {boolean} isValid
  */
 function OP_ROT(vm) {
+  // No stack overflows
+  if (vm.stack.length < 3) {
+    return false;
+  }
+
   const value = vm.stack.splice(-3, 1)[0];
   vm.stack.push(value);
 
@@ -156,6 +216,11 @@ function OP_ROT(vm) {
  * @returns {boolean} isValid
  */
 function OP_SWAP(vm) {
+  // No stack overflows
+  if (vm.stack.length < 2) {
+    return false;
+  }
+
   const value1 = vm.stack.pop();
   const value2 = vm.stack.pop();
 
@@ -173,6 +238,11 @@ function OP_SWAP(vm) {
  * @returns {boolean} isValid
  */
 function OP_TUCK(vm) {
+  // No stack overflows
+  if (vm.stack.length < 2) {
+    return false;
+  }
+
   const value = vm.stack[vm.stack.length - 1];
 
   vm.stack.splice(-2, 0, value);
@@ -188,6 +258,11 @@ function OP_TUCK(vm) {
  * @returns {boolean} isValid
  */
 function OP_2DROP(vm) {
+  // No stack overflows
+  if (vm.stack.length < 2) {
+    return false;
+  }
+
   vm.stack.pop();
   vm.stack.pop();
 
@@ -202,6 +277,11 @@ function OP_2DROP(vm) {
  * @returns {boolean} isValid
  */
 function OP_2DUP(vm) {
+  // No stack overflows
+  if (vm.stack.length < 2) {
+    return false;
+  }
+
   const value1 = vm.stack[vm.stack.length - 1];
   const value2 = vm.stack[vm.stack.length - 2];
 
@@ -219,6 +299,11 @@ function OP_2DUP(vm) {
  * @returns {boolean} isValid
  */
 function OP_3DUP(vm) {
+  // No stack overflows
+  if (vm.stack.length < 3) {
+    return false;
+  }
+
   const value1 = vm.stack[vm.stack.length - 1];
   const value2 = vm.stack[vm.stack.length - 2];
   const value3 = vm.stack[vm.stack.length - 3];
@@ -238,6 +323,11 @@ function OP_3DUP(vm) {
  * @returns {boolean} isValid
  */
 function OP_2OVER(vm) {
+  // No stack overflows
+  if (vm.stack.length < 4) {
+    return false;
+  }
+
   // TODO
   vm.cursor += 1;
   return true;
@@ -250,6 +340,11 @@ function OP_2OVER(vm) {
  * @returns {boolean} isValid
  */
 function OP_2ROT(vm) {
+  // No stack overflows
+  if (vm.stack.length < 6) {
+    return false;
+  }
+
   // TODO
   vm.cursor += 1;
   return true;
@@ -262,6 +357,11 @@ function OP_2ROT(vm) {
  * @returns {boolean} isValid
  */
 function OP_2SWAP(vm) {
+  // No stack overflows
+  if (vm.stack.length < 4) {
+    return false;
+  }
+
   // TODO
   vm.cursor += 1;
   return true;

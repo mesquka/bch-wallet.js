@@ -135,6 +135,138 @@ function OP_ROLL(vm) {
   return true;
 }
 
+/**
+ * Executes OP_Code
+ *
+ * @param {VM} vm - vm to execute on
+ * @returns {boolean} isValid
+ */
+function OP_ROT(vm) {
+  const value = vm.stack.splice(-3, 1)[0];
+  vm.stack.push(value);
+
+  vm.cursor += 1;
+  return true;
+}
+
+/**
+ * Executes OP_Code
+ *
+ * @param {VM} vm - vm to execute on
+ * @returns {boolean} isValid
+ */
+function OP_SWAP(vm) {
+  const value1 = vm.stack.pop();
+  const value2 = vm.stack.pop();
+
+  vm.stack.push(value1);
+  vm.stack.push(value2);
+
+  vm.cursor += 1;
+  return true;
+}
+
+/**
+ * Executes OP_Code
+ *
+ * @param {VM} vm - vm to execute on
+ * @returns {boolean} isValid
+ */
+function OP_TUCK(vm) {
+  const value = vm.stack[vm.stack.length - 1];
+
+  vm.stack.splice(-2, 0, value);
+
+  vm.cursor += 1;
+  return true;
+}
+
+/**
+ * Executes OP_Code
+ *
+ * @param {VM} vm - vm to execute on
+ * @returns {boolean} isValid
+ */
+function OP_2DROP(vm) {
+  vm.stack.pop();
+  vm.stack.pop();
+
+  vm.cursor += 1;
+  return true;
+}
+
+/**
+ * Executes OP_Code
+ *
+ * @param {VM} vm - vm to execute on
+ * @returns {boolean} isValid
+ */
+function OP_2DUP(vm) {
+  const value1 = vm.stack[vm.stack.length - 1];
+  const value2 = vm.stack[vm.stack.length - 2];
+
+  vm.stack.push(value2);
+  vm.stack.push(value1);
+
+  vm.cursor += 1;
+  return true;
+}
+
+/**
+ * Executes OP_Code
+ *
+ * @param {VM} vm - vm to execute on
+ * @returns {boolean} isValid
+ */
+function OP_3DUP(vm) {
+  const value1 = vm.stack[vm.stack.length - 1];
+  const value2 = vm.stack[vm.stack.length - 2];
+  const value3 = vm.stack[vm.stack.length - 3];
+
+  vm.stack.push(value3);
+  vm.stack.push(value2);
+  vm.stack.push(value1);
+
+  vm.cursor += 1;
+  return true;
+}
+
+/**
+ * Executes OP_Code
+ *
+ * @param {VM} vm - vm to execute on
+ * @returns {boolean} isValid
+ */
+function OP_2OVER(vm) {
+  // TODO
+  vm.cursor += 1;
+  return true;
+}
+
+/**
+ * Executes OP_Code
+ *
+ * @param {VM} vm - vm to execute on
+ * @returns {boolean} isValid
+ */
+function OP_2ROT(vm) {
+  // TODO
+  vm.cursor += 1;
+  return true;
+}
+
+/**
+ * Executes OP_Code
+ *
+ * @param {VM} vm - vm to execute on
+ * @returns {boolean} isValid
+ */
+function OP_2SWAP(vm) {
+  // TODO
+  vm.cursor += 1;
+  return true;
+}
+
 module.exports = {
   OP_TOALTSTACK,
   OP_FROMALTSTACK,

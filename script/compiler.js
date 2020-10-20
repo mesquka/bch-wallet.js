@@ -15,6 +15,16 @@ function compile(script) {
 
   // Loop through each element in tokenized array and transform to bytes
   tokenized.forEach((token) => {
+    // If OP_TRUE, transform it to OP_1
+    if (token === 'OP_TRUE') {
+      token = 'OP_1';
+    }
+
+    // If OP_FALSE, transform it to OP_0
+    if (token === 'OP_FALSE') {
+      token = 'OP_0';
+    }
+
     // If bytes are equal to an OP_Code, push relevent byte to array
     if (Object.keys(opcodes).includes(token.toUpperCase())) {
       return tokenizedBytes.push(opcodes[token]);

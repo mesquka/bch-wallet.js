@@ -184,7 +184,7 @@ function OP_ROLL(vm) {
     return false;
   }
 
-  vm.stack.push(vm.stack.slice(value.toNumber() * -1));
+  vm.stack.push(vm.stack.splice(value.toNumber() * -1, 1)[0]);
 
   vm.cursor += 1;
   return true;

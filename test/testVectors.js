@@ -120,6 +120,7 @@ module.exports = {
     },
   ],
   vm: [
+    // Constants
     {
       name: 'OP_0',
       test: 'OP_0',
@@ -246,6 +247,7 @@ module.exports = {
       expectedStack: [new BN(16)],
       expectedAltStack: [],
     },
+    // Flow Control
     {
       name: 'OP_NOP',
       test: 'OP_NOP',
@@ -288,6 +290,7 @@ module.exports = {
       expectedStack: [],
       expectedAltStack: [],
     },
+    // Stack
     {
       name: 'OP_TOALTSTACK',
       test: '01 OP_TOALTSTACK',
@@ -356,6 +359,55 @@ module.exports = {
       test: '01 02 OP_SWAP',
       transaction: null,
       expectedStack: [new BN(2), new BN(1)],
+      expectedAltStack: [],
+    },
+    {
+      name: 'OP_TUCK',
+      test: '01 02 OP_TUCK',
+      transaction: null,
+      expectedStack: [new BN(2), new BN(1), new BN(2)],
+      expectedAltStack: [],
+    },
+    {
+      name: 'OP_2DROP',
+      test: '01 02 03 OP_2DROP',
+      transaction: null,
+      expectedStack: [new BN(1)],
+      expectedAltStack: [],
+    },
+    {
+      name: 'OP_2DUP',
+      test: '01 02 OP_2DUP',
+      transaction: null,
+      expectedStack: [new BN(1), new BN(2), new BN(1), new BN(2)],
+      expectedAltStack: [],
+    },
+    {
+      name: 'OP_3DUP',
+      test: '01 02 03 OP_3DUP',
+      transaction: null,
+      expectedStack: [new BN(1), new BN(2), new BN(3), new BN(1), new BN(2), new BN(3)],
+      expectedAltStack: [],
+    },
+    {
+      name: 'OP_2OVER',
+      test: '01 02 03 04 OP_2OVER',
+      transaction: null,
+      expectedStack: [new BN(1), new BN(2), new BN(3), new BN(4), new BN(1), new BN(2)],
+      expectedAltStack: [],
+    },
+    {
+      name: 'OP_2ROT',
+      test: '01 02 03 04 05 06 OP_2ROT',
+      transaction: null,
+      expectedStack: [new BN(3), new BN(4), new BN(5), new BN(6), new BN(1), new BN(2)],
+      expectedAltStack: [],
+    },
+    {
+      name: 'OP_2SWAP',
+      test: '01 02 03 04 OP_2SWAP',
+      transaction: null,
+      expectedStack: [new BN(3), new BN(4), new BN(1), new BN(2)],
       expectedAltStack: [],
     },
   ],

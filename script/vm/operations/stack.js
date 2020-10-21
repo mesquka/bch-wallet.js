@@ -202,8 +202,7 @@ function OP_ROT(vm) {
     return false;
   }
 
-  const value = vm.stack.splice(-3, 1)[0];
-  vm.stack.push(value);
+  vm.stack.push(vm.stack.splice(-3, 1)[0]);
 
   vm.cursor += 1;
   return true;
@@ -221,11 +220,7 @@ function OP_SWAP(vm) {
     return false;
   }
 
-  const value1 = vm.stack.pop();
-  const value2 = vm.stack.pop();
-
-  vm.stack.push(value1);
-  vm.stack.push(value2);
+  vm.stack.push(vm.stack.splice(-2, 1)[0]);
 
   vm.cursor += 1;
   return true;

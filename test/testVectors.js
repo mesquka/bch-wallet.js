@@ -344,5 +344,19 @@ module.exports = {
       expectedStack: [new BN(1), new BN(1), new BN(1), new BN(4)],
       expectedAltStack: [],
     },
+    {
+      name: 'OP_ROT',
+      test: '01 02 03 OP_ROT',
+      transaction: null,
+      expectedStack: [new BN(2), new BN(3), new BN(1)],
+      expectedAltStack: [],
+    },
+    {
+      name: 'OP_SWAP',
+      test: '01 02 OP_SWAP',
+      transaction: null,
+      expectedStack: [new BN(2), new BN(1)],
+      expectedAltStack: [],
+    },
   ],
 };

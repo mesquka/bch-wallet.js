@@ -1,5 +1,4 @@
 const BN = require('bn.js');
-const { decompile } = require('../compiler');
 const operations = require('./operations');
 const Transaction = require('../../transaction');
 
@@ -53,28 +52,6 @@ class VM {
    * @member {Array<boolean>}
    */
   block = [];
-
-  /**
-   * Generate Mnemonic Phrase
-   *
-   * @static
-   * @param {string} lockingScript - hex encoded locking script
-   * @param {string} unlockingScript - hex encoded unlocking script
-   * @param {Transaction} transaction - transaction to verify
-   * @returns {VM} vm
-   */
-  static fromLockUnlock(lockingScript, unlockingScript, transaction) {
-    const vm = new VM();
-
-    vm.transaction = transaction;
-
-    const lockingScriptArray = decompile(lockingScript).split(' ');
-    const unlockingScriptArray = decompile(unlockingScript).split(' ');
-
-    vm.script = [...lockingScriptArray, 'OP_CHANGESCRIPT', ...unlockingScriptArray];
-
-    return vm;
-  }
 
   /**
    * Resets execution

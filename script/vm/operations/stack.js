@@ -238,9 +238,7 @@ function OP_TUCK(vm) {
     return false;
   }
 
-  const value = vm.stack[vm.stack.length - 1];
-
-  vm.stack.splice(-2, 0, value);
+  vm.stack.splice(-2, 0, vm.stack[vm.stack.length - 1]);
 
   vm.cursor += 1;
   return true;

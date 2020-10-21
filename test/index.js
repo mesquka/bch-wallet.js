@@ -10,8 +10,6 @@ const script = require('../script');
  * Wrap in async function so we can use await if needed
  */
 async function test() {
-  console.log('\n\nRUNNING ADDRESS TESTS');
-
   console.log('\nTESTING SCRIPT COMPILER');
   testVectors.scripts.forEach((scriptVector) => {
     console.log(scriptVector.asm);
@@ -107,8 +105,6 @@ async function test() {
     });
   });
 
-  console.log('\n\nRUNNING WALLET TESTS');
-
   console.log('\nTESTING WALLET CREATION');
   const wallet = new Wallet(testVectors.mnemonic, {
     network: 'testnet',
@@ -116,7 +112,6 @@ async function test() {
   console.log(wallet);
 
   console.log('\nTESTING ADDRESS DERIVATION');
-
   testVectors.derivations.forEach((vector, index) => {
     console.log();
     const address = wallet.derive(wallet.defaultDerivationPath, index, false);
@@ -128,7 +123,6 @@ async function test() {
   });
 
   console.log('\nSCANNING ADDRESSES');
-
   console.time('wallet scan');
   await wallet.rescan();
   console.timeEnd('wallet scan');

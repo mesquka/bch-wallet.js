@@ -321,7 +321,8 @@ function OP_2OVER(vm) {
     return false;
   }
 
-  // TODO
+  vm.stack = vm.stack.concat(vm.stack.slice(-4, 2));
+
   vm.cursor += 1;
   return true;
 }
@@ -338,7 +339,8 @@ function OP_2ROT(vm) {
     return false;
   }
 
-  // TODO
+  vm.stack = vm.stack.concat(vm.stack.splice(-6, 2));
+
   vm.cursor += 1;
   return true;
 }
@@ -355,7 +357,8 @@ function OP_2SWAP(vm) {
     return false;
   }
 
-  // TODO
+  vm.stack = vm.stack.concat(vm.stack.splice(-4, 2));
+
   vm.cursor += 1;
   return true;
 }

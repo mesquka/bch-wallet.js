@@ -159,7 +159,7 @@ function OP_PICK(vm) {
     return false;
   }
 
-  vm.stack.push(vm.stack[vm.stack.length - 1 - value.toNumber()]);
+  vm.stack.push(vm.stack[vm.stack.length - value.toNumber()]);
 
   vm.cursor += 1;
   return true;

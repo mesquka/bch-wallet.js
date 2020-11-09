@@ -1,6 +1,6 @@
 const BN = require('bn.js');
 const operations = require('./operations');
-const Transaction = require('../../transaction');
+const Transaction = require('../transaction');
 
 /**
  * Transaction
@@ -76,6 +76,7 @@ class VM {
       return operations[step](this);
     }
 
+    // TODO: Switch BN to Buffer to allow script number encoding
     // Otherwise this is data, push to stack
     this.stack.push(new BN(step, 16));
 

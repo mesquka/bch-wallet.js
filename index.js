@@ -25,14 +25,14 @@ class BCHWallet {
   /**
    * Wallet seed
    *
-   * @member {number}
+   * @member {Buffer}
    */
   #seed
 
   /**
    * Electrum wallet
    *
-   * @member {number}
+   * @member {Electrum}
    */
   electrum;
 
@@ -283,6 +283,14 @@ class BCHWallet {
    */
   static generateMnemonic() {
     return bip39.generateMnemonic();
+  }
+
+  /**
+   * Shutsdown wallet
+   */
+  shutdown() {
+    // Shutdown electrum
+    this.electrum.shutdown();
   }
 }
 

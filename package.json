@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "npx eslint .",
-    "test": "node test/index.js && npm run lint",
+    "jest": "npx jest",
+    "test": "npm run jest && npm run lint",
     "discover:mainnet": "node test/discover_electrum_servers.js fulcrum.fountainhead.cash 50002",
     "discover:testnet": "node test/discover_electrum_servers.js tbch.loping.net 60002",
     "discover": "npm run discover:mainnet",
@@ -30,6 +31,7 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jsdoc": "^30.3.2",
+    "jest": "^26.6.0",
     "jsdoc": "^3.6.5",
     "serve": "^11.3.2"
   },

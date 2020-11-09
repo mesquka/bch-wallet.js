@@ -148,6 +148,14 @@ class Electrum {
     // Handle subscription normally
     return this.client.request(callback, method, ...params);
   }
+
+  /**
+   * Shutsdown electrum connection
+   */
+  shutdown() {
+    // Shutdown electrum
+    this.client.shutdown();
+  }
 }
 
 module.exports = Electrum;

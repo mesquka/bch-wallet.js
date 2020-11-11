@@ -7,9 +7,6 @@
     "lint": "npx eslint .",
     "jest": "npx jest",
     "test": "npm run jest && npm run lint",
-    "discover:mainnet": "node test/discover_electrum_servers.js fulcrum.fountainhead.cash 50002",
-    "discover:testnet": "node test/discover_electrum_servers.js tbch.loping.net 60002",
-    "discover": "npm run discover:mainnet",
     "docs:generate": "rm -rf docs && npx jsdoc -c jsdoc.json",
     "docs:serve": "npx serve docs",
     "docs": "npm run docs:generate && npm run docs:serve"
